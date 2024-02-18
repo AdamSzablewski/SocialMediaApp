@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 public class PersonController {
     private final PersonService personService;
-    private final ExceptionHandler exceptionHandler;
 
     @GetMapping()
     public ResponseEntity<PersonDto> getPersonById(@RequestParam(name = "userId")long userId){
@@ -31,11 +30,6 @@ public class PersonController {
     public ResponseEntity<Long> getUserIdForUsername(@RequestParam(name = "email")String email){
         return ResponseEntity.ok(personService.getUserIdForUsername(email));
     }
-    @GetMapping("/username")
-    public ResponseEntity<String> getUsernameFromId(@RequestParam(name = "userId")long userId){
-        return ResponseEntity.ok(personService.getUsernameFromId(userId));
-    }
-
     @PatchMapping("/reset-password")
     @SecureUserIdResource
     public ResponseEntity<String> resetUserPassword(@RequestParam("password") String password,

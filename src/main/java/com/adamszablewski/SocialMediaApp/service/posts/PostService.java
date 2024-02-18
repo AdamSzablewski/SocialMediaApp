@@ -4,10 +4,16 @@ import com.adamszablewski.SocialMediaApp.dtos.PostDto;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Post;
 import com.adamszablewski.SocialMediaApp.enteties.posts.PostType;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Profile;
+import com.adamszablewski.SocialMediaApp.enteties.users.Person;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchPostException;
+import com.adamszablewski.SocialMediaApp.exceptions.NoSuchUserException;
 import com.adamszablewski.SocialMediaApp.exceptions.WrongTypeException;
+import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.PostRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.ProfileRepository;
+import com.adamszablewski.SocialMediaApp.s3.S3service;
+import com.adamszablewski.SocialMediaApp.service.multimedia.ImageService;
+import com.adamszablewski.SocialMediaApp.utils.UniqueIdGenerator;
 import lombok.AllArgsConstructor;
 import org.hibernate.event.spi.EventType;
 import org.springframework.scheduling.annotation.Async;
@@ -25,12 +31,16 @@ import java.util.concurrent.CompletableFuture;
 public class PostService {
     private final PostRepository postRepository;
     private final ProfileRepository profileRepository;
+    private final S3service s3service;
+    private final ImageService imageService;
+    private final PersonRepository personRepository;
+    private final UniqueIdGenerator uniqueIdGenerator;
     public void deletePostById(long postId) {
         postRepository.deleteById(postId);
     }
 
-    public void postTextPost(PostDto postDto, long userId) {
-        Post post = createPost(PostType.TEXT, userId);
+    public void postTextPost(PostDto postDto, long userId, boolean isPublic) {
+        Post post = createPost(PostType.TEXT, userId, isPublic);
         fillTextPost(post, postDto);
         postRepository.save(post);
     }
@@ -41,10 +51,11 @@ public class PostService {
         post.setText(postDto.getText());
         return post;
     }
-    public Post createPost(PostType postType,  long userId){
+    public Post createPost(PostType postType,  long userId, boolean isPublic){
         return Post.builder()
                 .postType(postType)
                 .userId(userId)
+                .isPublic(isPublic)
                 .comments(new ArrayList<>())
                 .likes(new HashSet<>())
                 .visible(true)
@@ -52,16 +63,14 @@ public class PostService {
                 .build();
     }
     @Transactional
-    @Async
     public String uploadImageForPost(long userId, MultipartFile image) {
-        String multimediaId = uniqueIDServiceClient.getUniqueImageId();
-        CompletableFuture.runAsync(()-> imageServiceClient.sendImageToImageService(image, userId, multimediaId));
+        String multimediaId = uniqueIdGenerator.generateUniqueImageId();
+        imageService.upploadImageToS3(image, multimediaId);
         createHiddenPost(PostType.IMAGE, userId, multimediaId);
         return multimediaId;
     }
     private Profile createProfile(long userId){
         Profile newProfile = Profile.builder()
-                .userId(userId)
                 .posts(new ArrayList<>())
                 .build();
         profileRepository.save(newProfile);
@@ -76,8 +85,8 @@ public class PostService {
         postRepository.save(post);
     }
     public String uploadVideoForPost(long userId, MultipartFile video) {
-        String multimediaId = uniqueIDServiceClient.getUniqueVideoId();
-        videoServiceClient.sendVideoToVideoService(video, userId, multimediaId);
+        String multimediaId = uniqueIdGenerator.generateUniqueVideoId();
+        imageService.upploadVideoToS3(video, multimediaId);
         createHiddenPost(PostType.VIDEO,userId, multimediaId);
         return multimediaId;
 
@@ -86,10 +95,11 @@ public class PostService {
     @Transactional
     public void createHiddenPost(PostType type, long userId, String multimediaID){
 
-            Post post = createPost(type, userId);
+            Post post = createPost(type, userId, false);
             post.setVisible(false);
-            Profile profile = profileRepository.findByUserId(userId)
-                    .orElseGet(()-> createProfile(userId));
+            Person person = personRepository.findById(userId)
+                    .orElseThrow(NoSuchUserException::new);
+            Profile profile = person.getProfile();
             try{
                 if (profile.getPosts() == null){
                     profile.setPosts(new ArrayList<>());

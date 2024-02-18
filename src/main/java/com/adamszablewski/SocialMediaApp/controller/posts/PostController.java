@@ -17,17 +17,18 @@ import java.io.IOException;
 
 @Controller
 @AllArgsConstructor
-@RequestMapping("/posts/write")
+@RequestMapping("/posts")
 public class PostController {
 
     private final PostService postService;
-    private final ExceptionHandler exceptionHandler;
 
     @PostMapping()
     @SecureUserIdResource
-    public ResponseEntity<String> postPost(HttpServletRequest servletRequest, @RequestBody PostDto post,
-                                           @RequestParam(name = "userId") long userId){
-        postService.postTextPost(post, userId);
+    public ResponseEntity<String> postTextPost(HttpServletRequest servletRequest,
+                                               @RequestBody PostDto post,
+                                                @RequestParam(name = "userId") long userId,
+                                               @RequestParam("isPublic") boolean isPublic){
+        postService.postTextPost(post, userId, isPublic);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @PostMapping(value = "/image/upload")

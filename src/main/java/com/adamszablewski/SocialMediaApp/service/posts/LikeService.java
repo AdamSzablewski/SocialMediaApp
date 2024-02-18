@@ -1,22 +1,19 @@
 package com.adamszablewski.SocialMediaApp.service.posts;
 
-import com.adamszablewski.events.CommentEvent;
-import com.adamszablewski.events.EventType;
-import com.adamszablewski.events.PostEvent;
-import com.adamszablewski.events.UpvoteEvent;
-import com.adamszablewski.exceptions.NoSuchCommentException;
-import com.adamszablewski.exceptions.NoSuchPostException;
-import com.adamszablewski.interfaces.Likeable;
-import com.adamszablewski.kafka.KafkaMessagePublisher;
-import com.adamszablewski.model.Comment;
-import com.adamszablewski.model.Post;
-import com.adamszablewski.model.Upvote;
-import com.adamszablewski.repository.CommentRepository;
-import com.adamszablewski.repository.LikeRepository;
-import com.adamszablewski.repository.PostRepository;
+import com.adamszablewski.SocialMediaApp.enteties.posts.Comment;
+import com.adamszablewski.SocialMediaApp.enteties.posts.Post;
+import com.adamszablewski.SocialMediaApp.enteties.posts.Upvote;
+import com.adamszablewski.SocialMediaApp.exceptions.NoSuchCommentException;
+import com.adamszablewski.SocialMediaApp.exceptions.NoSuchPostException;
+import com.adamszablewski.SocialMediaApp.interfaces.Likeable;
+import com.adamszablewski.SocialMediaApp.repository.posts.CommentRepository;
+import com.adamszablewski.SocialMediaApp.repository.posts.LikeRepository;
+import com.adamszablewski.SocialMediaApp.repository.posts.PostRepository;
 import lombok.AllArgsConstructor;
+import org.hibernate.event.spi.EventType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.yaml.snakeyaml.events.CommentEvent;
 
 @Service
 @AllArgsConstructor
@@ -25,7 +22,6 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
-    private final KafkaMessagePublisher kafkaMessagePublisher;
 
     public boolean checkIfUserAlreadyLiked(Likeable likeableObject, long userId){
         return likeableObject.getLikes().stream()
@@ -39,7 +35,6 @@ public class LikeService {
         if (upvote != null){
             likeableObject.getLikes().remove(upvote);
             likeRepository.delete(upvote);
-            kafkaMessagePublisher.sendUpvoteEventMessage(new UpvoteEvent(EventType.DELETE, upvote));
         }
     }
     @Transactional
@@ -55,8 +50,6 @@ public class LikeService {
             post.getLikes().add(newLike);
             likeRepository.save(newLike);
             postRepository.save(post);
-            kafkaMessagePublisher.sendUpvoteEventMessage(new UpvoteEvent(EventType.CREATE, newLike));
-            kafkaMessagePublisher.sendPostEventMessage(new PostEvent(EventType.UPDATE, post));
         }
     }
     @Transactional
@@ -72,8 +65,6 @@ public class LikeService {
             comment.getLikes().add(newLike);
             likeRepository.save(newLike);
             commentRepository.save(comment);
-            kafkaMessagePublisher.sendUpvoteEventMessage(new UpvoteEvent(EventType.CREATE, newLike));
-            kafkaMessagePublisher.sendCommentEventMessage(new CommentEvent(EventType.UPDATE, comment));
         }
     }
 
@@ -83,7 +74,6 @@ public class LikeService {
                 .orElseThrow(NoSuchPostException::new);
         removeLike(post, userId);
         postRepository.save(post);
-        kafkaMessagePublisher.sendPostEventMessage(new PostEvent(EventType.UPDATE, post));
 
     }
 
@@ -92,6 +82,5 @@ public class LikeService {
                 .orElseThrow(NoSuchCommentException::new);
         removeLike(comment, userId);
         commentRepository.save(comment);
-        kafkaMessagePublisher.sendCommentEventMessage(new CommentEvent(EventType.UPDATE, comment));
     }
 }

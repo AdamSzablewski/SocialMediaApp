@@ -22,6 +22,7 @@ public class Post implements Commentable, Likeable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private long userId;
+    private boolean isPublic;
     private PostType postType;
     private LocalDateTime creationTime;
     private String text;

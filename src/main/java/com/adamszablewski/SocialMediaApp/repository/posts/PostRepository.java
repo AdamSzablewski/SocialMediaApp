@@ -1,5 +1,6 @@
 package com.adamszablewski.SocialMediaApp.repository.posts;
 
+import com.adamszablewski.SocialMediaApp.dtos.PostDto;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +21,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     void deleteAllByUserId(long userId);
 
     void deleteByMultimediaId(String multimediaID);
+    @Query("SELECT p FROM Post p WHERE p.isPublic = true AND p.visible = true")
+    List<Post> findAllPublicAndVisiblePosts();
 }

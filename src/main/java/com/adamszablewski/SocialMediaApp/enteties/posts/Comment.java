@@ -1,5 +1,5 @@
 package com.adamszablewski.SocialMediaApp.enteties.posts;
-import com.adamszablewski.interfaces.Likeable;
+import com.adamszablewski.SocialMediaApp.interfaces.Likeable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

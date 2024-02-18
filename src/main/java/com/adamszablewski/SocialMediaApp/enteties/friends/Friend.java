@@ -1,7 +1,7 @@
 package com.adamszablewski.SocialMediaApp.enteties.friends;
 
-import com.adamszablewski.interfaces.Identifiable;
-import com.adamszablewski.interfaces.UserResource;
+import com.adamszablewski.SocialMediaApp.interfaces.Identifiable;
+import com.adamszablewski.SocialMediaApp.interfaces.UserResource;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

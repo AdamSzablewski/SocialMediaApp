@@ -1,12 +1,14 @@
 package com.adamszablewski.SocialMediaApp.service.posts;
 
 
+import com.adamszablewski.SocialMediaApp.dtos.CommentDto;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Comment;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Post;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchCommentException;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchPostException;
 import com.adamszablewski.SocialMediaApp.repository.posts.CommentRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.PostRepository;
+import com.adamszablewski.SocialMediaApp.utils.Mapper;
 import lombok.AllArgsConstructor;
 import org.hibernate.event.spi.EventType;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import org.yaml.snakeyaml.events.CommentEvent;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -73,5 +76,14 @@ public class CommentService {
         parent.getAnswers().add(comment);
         commentRepository.save(comment);
         commentRepository.save(parent);
+    }
+
+    public List<CommentDto> getCommentsForPost(long postId) {
+        return postRepository.findById(postId)
+                .map(Post::getComments)
+                .orElse(List.of())
+                .stream()
+                .map(Mapper::mapCommentToDto)
+                .toList();
     }
 }

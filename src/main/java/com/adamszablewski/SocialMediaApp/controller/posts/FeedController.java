@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 @Controller
-@RequestMapping("/posts/read/feed")
+@RequestMapping("/feed")
 @AllArgsConstructor
 public class FeedController {
 
@@ -26,5 +26,10 @@ public class FeedController {
     public List<PostDto> getFeedForUser(@RequestParam("userId") long userId,
                                         HttpServletRequest servletRequest){
         return feedService.getFeedForUser(userId);
+    }
+    @GetMapping("/public")
+    @ResponseBody
+    public List<PostDto> getPublicFeed(){
+        return feedService.getPublicFeed();
     }
 }

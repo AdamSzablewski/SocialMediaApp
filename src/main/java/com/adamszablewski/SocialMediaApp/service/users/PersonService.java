@@ -2,15 +2,23 @@ package com.adamszablewski.SocialMediaApp.service.users;
 
 
 import com.adamszablewski.SocialMediaApp.dtos.PersonDto;
+import com.adamszablewski.SocialMediaApp.enteties.TermsOfUse;
+import com.adamszablewski.SocialMediaApp.enteties.posts.Profile;
 import com.adamszablewski.SocialMediaApp.enteties.users.Person;
 import com.adamszablewski.SocialMediaApp.exceptions.IncompleteDataException;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchUserException;
 import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
+import com.adamszablewski.SocialMediaApp.repository.posts.ProfileRepository;
 import com.adamszablewski.SocialMediaApp.utils.EntityUtils;
 import com.adamszablewski.SocialMediaApp.utils.UniqueIdGenerator;
 import com.adamszablewski.SocialMediaApp.utils.Validator;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+
+import static com.adamszablewski.SocialMediaApp.enteties.TermsOfUse.ACCEPTED;
 
 @Service
 @AllArgsConstructor
@@ -19,6 +27,8 @@ public class PersonService {
     private final PersonRepository personRepository;
     private final EntityUtils entityUtils;
     private final UniqueIdGenerator uniqueIdGenerator;
+    private final ProfileRepository profileRepository;
+    private final PasswordEncoder passwordEncoder;
     private final Validator validator;
 
 
@@ -34,28 +44,35 @@ public class PersonService {
         personRepository.deleteById(userId);
 
     }
+    public String hashPassword(String password) {
+        return passwordEncoder.encode(password);
+    }
     public void createUser(Person person) {
         boolean valuesValidated = validator.validatePersonValues(person);
         if (!valuesValidated){
             throw new IncompleteDataException();
         }
-        String hashedPassword = person.getPassword();
+        String hashedPassword = hashPassword(person.getPassword());
+        Profile profile = Profile.builder()
+                .build();
+
         Person newPerson = Person.builder()
                 .birthDate(person.getBirthDate())
                 .firstName(person.getFirstName())
                 .lastName(person.getLastName())
                 .phoneNumber(person.getPhoneNumber())
-                .username(person.getUsername())
+                .joinDate(LocalDateTime.now())
+                .termsOfUse(ACCEPTED)
                 .email(person.getEmail())
                 .password(hashedPassword)
+                .profile(profile)
                 .build();
         personRepository.save(newPerson);
+
+
+
     }
-    public String getUsernameFromId(long userId) {
-        Person user = personRepository.findById(userId)
-                .orElseThrow(NoSuchUserException::new);
-        return user.getUsername();
-    }
+
     public long getUserIdForUsername(String email) {
         Person person = personRepository.findByEmail(email)
                 .orElseThrow(NoSuchUserException::new);

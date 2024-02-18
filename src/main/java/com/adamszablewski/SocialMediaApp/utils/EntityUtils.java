@@ -26,6 +26,8 @@ public class EntityUtils {
                 .birthDate(person.getBirthDate())
                 .firstName(person.getFirstName())
                 .lastName(person.getLastName())
+                .birthDate(person.getBirthDate())
+                .joinDate(person.getJoinDate().toLocalDate())
                 .build();
     }
 }

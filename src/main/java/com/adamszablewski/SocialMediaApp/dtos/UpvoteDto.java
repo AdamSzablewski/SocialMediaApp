@@ -1,7 +1,7 @@
 package com.adamszablewski.SocialMediaApp.dtos;
 
-import com.adamszablewski.model.Comment;
-import com.adamszablewski.model.Post;
+import com.adamszablewski.SocialMediaApp.enteties.posts.Comment;
+import com.adamszablewski.SocialMediaApp.enteties.posts.Post;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

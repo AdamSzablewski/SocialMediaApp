@@ -2,6 +2,7 @@ package com.adamszablewski.SocialMediaApp.controller.posts;
 
 import com.adamszablewski.SocialMediaApp.annotations.SecureContentResource;
 import com.adamszablewski.SocialMediaApp.annotations.SecureUserIdResource;
+import com.adamszablewski.SocialMediaApp.dtos.CommentDto;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Comment;
 import com.adamszablewski.SocialMediaApp.service.posts.CommentService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,9 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @AllArgsConstructor
-@RequestMapping("/posts/write/comments")
+@RequestMapping("/comments")
 public class CommentController {
 
     private final CommentService commentService;
@@ -45,6 +48,12 @@ public class CommentController {
                                                        HttpServletRequest servletRequest){
         commentService.deleteCommentForPost(postId, commentId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @GetMapping()
+    public ResponseEntity<List<CommentDto>> getCommentsForPost(@RequestParam(name = "postId") long postId,
+                                                                 HttpServletRequest servletRequest){
+
+        return  ResponseEntity.ok(commentService.getCommentsForPost(postId));
     }
     @DeleteMapping("/delete")
     @SecureContentResource(value = "commentId")

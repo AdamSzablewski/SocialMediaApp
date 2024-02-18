@@ -15,5 +15,6 @@ public class PersonDto {
     private String firstName;
     private String lastName;
     private String username;
+    private LocalDate joinDate;
     private LocalDate birthDate;
 }
