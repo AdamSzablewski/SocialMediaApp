@@ -1,5 +1,7 @@
 package com.adamszablewski.SocialMediaApp.dtos;
 
+import com.adamszablewski.SocialMediaApp.enteties.friends.FriendList;
+import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,4 +19,5 @@ public class PersonDto {
     private String username;
     private LocalDate joinDate;
     private LocalDate birthDate;
+    private ProfileDto profile;
 }

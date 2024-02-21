@@ -2,7 +2,7 @@ package com.adamszablewski.SocialMediaApp.utils;
 
 
 import com.adamszablewski.SocialMediaApp.dtos.PersonDto;
-import com.adamszablewski.SocialMediaApp.enteties.users.Person;
+import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.interfaces.Identifiable;
 import org.springframework.stereotype.Component;
 

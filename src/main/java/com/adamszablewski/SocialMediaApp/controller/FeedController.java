@@ -1,8 +1,8 @@
-package com.adamszablewski.SocialMediaApp.controller.posts;
+package com.adamszablewski.SocialMediaApp.controller;
 
 import com.adamszablewski.SocialMediaApp.annotations.SecureUserIdResource;
 import com.adamszablewski.SocialMediaApp.dtos.PostDto;
-import com.adamszablewski.SocialMediaApp.service.posts.FeedService;
+import com.adamszablewski.SocialMediaApp.service.FeedService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;

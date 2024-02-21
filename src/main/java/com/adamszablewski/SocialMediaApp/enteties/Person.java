@@ -1,7 +1,6 @@
-package com.adamszablewski.SocialMediaApp.enteties.users;
+package com.adamszablewski.SocialMediaApp.enteties;
 
-import com.adamszablewski.SocialMediaApp.enteties.TermsOfUse;
-import com.adamszablewski.SocialMediaApp.enteties.posts.Profile;
+import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
 import com.adamszablewski.SocialMediaApp.interfaces.Identifiable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

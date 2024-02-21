@@ -1,7 +1,7 @@
 package com.adamszablewski.SocialMediaApp.utils;
 
 
-import com.adamszablewski.SocialMediaApp.enteties.users.Person;
+import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.exceptions.UserAlreadyExistException;
 import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
 import lombok.AllArgsConstructor;

@@ -1,19 +1,20 @@
-package com.adamszablewski.SocialMediaApp.service.posts;
+package com.adamszablewski.SocialMediaApp.service;
 
 
 import com.adamszablewski.SocialMediaApp.dtos.CommentDto;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Comment;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Post;
+import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchCommentException;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchPostException;
+import com.adamszablewski.SocialMediaApp.exceptions.NoSuchUserException;
+import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.CommentRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.PostRepository;
 import com.adamszablewski.SocialMediaApp.utils.Mapper;
 import lombok.AllArgsConstructor;
-import org.hibernate.event.spi.EventType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.yaml.snakeyaml.events.CommentEvent;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import java.util.List;
 public class CommentService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final PersonRepository personRepository;
 
     @Transactional
     public void deleteCommentForPost(long postId, long commentId) {
@@ -48,12 +50,14 @@ public class CommentService {
         commentRepository.delete(commentToRemove);
     }
     @Transactional
-    public void postCommentForPost(long postId, Comment commentData) {
+    public void postCommentForPost(long postId, Comment commentData, long userId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(NoSuchPostException::new);
+        Person user = personRepository.findById(userId)
+                .orElseThrow(NoSuchUserException::new);
         Comment comment = Comment.builder()
                 .text(commentData.getText())
-                .userId(commentData.getUserId())
+                .user(user)
                 .dateTime(LocalDateTime.now())
                 .build();
         post.getComments().add(comment);
@@ -64,9 +68,11 @@ public class CommentService {
     public void postCommentForComment(long commentId, Comment commentData, long userId) {
         Comment parent = commentRepository.findById(commentId)
                 .orElseThrow(NoSuchCommentException::new);
+        Person user = personRepository.findById(userId)
+                .orElseThrow(NoSuchUserException::new);
         Comment comment = Comment.builder()
                 .text(commentData.getText())
-                .userId(userId)
+                .user(user)
                 .dateTime(LocalDateTime.now())
                 .build();
 
@@ -76,10 +82,28 @@ public class CommentService {
         parent.getAnswers().add(comment);
         commentRepository.save(comment);
         commentRepository.save(parent);
+        System.out.println("created comment "+comment);
     }
 
     public List<CommentDto> getCommentsForPost(long postId) {
         return postRepository.findById(postId)
+                .map(Post::getComments)
+                .orElse(List.of())
+                .stream()
+                .map(Mapper::mapCommentToDto)
+                .toList();
+    }
+
+    public List<CommentDto> getCommentsForResource(long resourceId, boolean isComment) {
+        if(isComment){
+            return commentRepository.findById(resourceId)
+                    .orElseThrow(NoSuchCommentException::new)
+                    .getComments()
+                    .stream()
+                    .map(Mapper::mapCommentToDto)
+                    .toList();
+        }
+        return postRepository.findById(resourceId)
                 .map(Post::getComments)
                 .orElse(List.of())
                 .stream()

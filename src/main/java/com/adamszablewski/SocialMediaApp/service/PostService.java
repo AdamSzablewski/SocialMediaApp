@@ -1,10 +1,10 @@
-package com.adamszablewski.SocialMediaApp.service.posts;
+package com.adamszablewski.SocialMediaApp.service;
 
-import com.adamszablewski.SocialMediaApp.dtos.PostDto;
+import com.adamszablewski.SocialMediaApp.dtos.TextPostDto;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Post;
 import com.adamszablewski.SocialMediaApp.enteties.posts.PostType;
-import com.adamszablewski.SocialMediaApp.enteties.posts.Profile;
-import com.adamszablewski.SocialMediaApp.enteties.users.Person;
+import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
+import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchPostException;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchUserException;
 import com.adamszablewski.SocialMediaApp.exceptions.WrongTypeException;
@@ -15,7 +15,6 @@ import com.adamszablewski.SocialMediaApp.s3.S3service;
 import com.adamszablewski.SocialMediaApp.service.multimedia.ImageService;
 import com.adamszablewski.SocialMediaApp.utils.UniqueIdGenerator;
 import lombok.AllArgsConstructor;
-import org.hibernate.event.spi.EventType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 @AllArgsConstructor
@@ -39,12 +37,12 @@ public class PostService {
         postRepository.deleteById(postId);
     }
 
-    public void postTextPost(PostDto postDto, long userId, boolean isPublic) {
+    public void postTextPost(TextPostDto postDto, long userId, boolean isPublic) {
         Post post = createPost(PostType.TEXT, userId, isPublic);
         fillTextPost(post, postDto);
         postRepository.save(post);
     }
-    public Post fillTextPost(Post post, PostDto postDto){
+    public Post fillTextPost(Post post, TextPostDto postDto){
         if (post.getPostType() != PostType.TEXT){
             throw new WrongTypeException();
         }
@@ -65,8 +63,9 @@ public class PostService {
     @Transactional
     public String uploadImageForPost(long userId, MultipartFile image) {
         String multimediaId = uniqueIdGenerator.generateUniqueImageId();
-        imageService.upploadImageToS3(image, multimediaId);
+       // imageService.upploadImageToS3(image, multimediaId);
         createHiddenPost(PostType.IMAGE, userId, multimediaId);
+        System.out.println(multimediaId);
         return multimediaId;
     }
     private Profile createProfile(long userId){
@@ -76,7 +75,7 @@ public class PostService {
         profileRepository.save(newProfile);
         return newProfile;
     }
-    public void publishPost(String multimediaId, PostDto postDto) {
+    public void publishPost(String multimediaId, TextPostDto postDto) {
         Post post = postRepository.findByMultimediaId(multimediaId)
                 .orElseThrow(NoSuchPostException::new);
         post.setDescription(postDto.getDescription());
@@ -97,6 +96,7 @@ public class PostService {
 
             Post post = createPost(type, userId, false);
             post.setVisible(false);
+            post.setMultimediaId(multimediaID);
             Person person = personRepository.findById(userId)
                     .orElseThrow(NoSuchUserException::new);
             Profile profile = person.getProfile();

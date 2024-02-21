@@ -1,9 +1,9 @@
-package com.adamszablewski.SocialMediaApp.controller.posts;
+package com.adamszablewski.SocialMediaApp.controller;
 
 import com.adamszablewski.SocialMediaApp.annotations.SecureContentResource;
 import com.adamszablewski.SocialMediaApp.annotations.SecureUserIdResource;
-import com.adamszablewski.SocialMediaApp.dtos.PostDto;
-import com.adamszablewski.SocialMediaApp.service.posts.PostService;
+import com.adamszablewski.SocialMediaApp.dtos.TextPostDto;
+import com.adamszablewski.SocialMediaApp.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,10 +25,10 @@ public class PostController {
     @PostMapping()
     @SecureUserIdResource
     public ResponseEntity<String> postTextPost(HttpServletRequest servletRequest,
-                                               @RequestBody PostDto post,
+                                               @RequestBody TextPostDto postDto,
                                                 @RequestParam(name = "userId") long userId,
                                                @RequestParam("isPublic") boolean isPublic){
-        postService.postTextPost(post, userId, isPublic);
+        postService.postTextPost(postDto, userId, isPublic);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @PostMapping(value = "/image/upload")
@@ -36,7 +36,7 @@ public class PostController {
     public ResponseEntity<String> uploadImageForPost(HttpServletRequest servletRequest,
                                                      @RequestParam(name = "userId") long userId,
                                                      @RequestParam MultipartFile image) {
-        return ResponseEntity.ok(postService.uploadImageForPost(userId, image));
+        return ResponseEntity.ok().body(postService.uploadImageForPost(userId, image));
     }
     @PostMapping(value = "/video/upload", produces = MediaType.APPLICATION_JSON_VALUE)
     @SecureContentResource
@@ -44,22 +44,30 @@ public class PostController {
                                            @RequestParam("video") MultipartFile video) throws IOException {
         return postService.uploadVideoForPost(userId, video);
     }
-    @PutMapping("/image")
+//    @PutMapping("/image")
+//    @SecureContentResource
+//    public ResponseEntity<String> publishImagePost(HttpServletRequest servletRequest,
+//                                                   @RequestParam(name = "multimediaId") String multimediaId,
+//                                                   @RequestBody PostDto postDto ) {
+//        postService.publishPost(multimediaId, postDto);
+//        return ResponseEntity.ok().build();
+//    }
+    @PostMapping("/publish")
     @SecureContentResource
-    public ResponseEntity<String> publishImagePost(HttpServletRequest servletRequest,
+    public ResponseEntity<String> publishMultimediaPost(HttpServletRequest servletRequest,
                                                    @RequestParam(name = "multimediaId") String multimediaId,
-                                                   @RequestBody PostDto postDto ) {
+                                                   @RequestBody TextPostDto postDto ) {
         postService.publishPost(multimediaId, postDto);
         return ResponseEntity.ok().build();
     }
-    @PutMapping("/video")
-    @SecureContentResource(value = "multimediaId")
-    public ResponseEntity<String> publishVideoPost(HttpServletRequest servletRequest,
-                                                   @RequestParam(name = "multimediaId") String multimediaId,
-                                                   @RequestBody PostDto postDto ) {
-        postService.publishPost(multimediaId, postDto);
-        return ResponseEntity.ok().build();
-    }
+//    @PutMapping("/video")
+//    @SecureContentResource(value = "multimediaId")
+//    public ResponseEntity<String> publishVideoPost(HttpServletRequest servletRequest,
+//                                                   @RequestParam(name = "multimediaId") String multimediaId,
+//                                                   @RequestBody PostDto postDto ) {
+//        postService.publishPost(multimediaId, postDto);
+//        return ResponseEntity.ok().build();
+//    }
     @DeleteMapping("/delete")
     @SecureContentResource(value = "postId")
     public ResponseEntity<String> deletePost(HttpServletRequest servletRequest, @RequestParam(name = "postId") long postId){

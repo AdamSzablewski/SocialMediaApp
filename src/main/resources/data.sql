@@ -33,12 +33,47 @@ VALUES
 ('Interesting thoughts.', 3, '2023-01-02 11:30:00'),
 ('Nice!', 4, '2023-01-03 12:30:00'),
 ('I feel the same.', 5, '2023-01-04 13:30:00'),
-('Glad you enjoy it!', 1, '2023-01-05 14:30:00');
-
+('Glad you enjoy it!', 1, '2023-01-05 14:30:00'),
+('First response to Comment 1.', 2, '2023-01-01 10:35:00'),
+('Second response to Comment 1.', 3, '2023-01-01 10:40:00'),
+('Third response to Comment 1.', 4, '2023-01-01 10:45:00');
 INSERT INTO post_comments(comments_id, post_id)
     VALUES
     (1,1),
     (2,1),
     (3,1),
     (4,1);
+
+INSERT INTO COMMENT_ANSWERS (answers_id, comment_id) VALUES
+(6, 1),
+(7, 1),
+(8, 1);
+
+INSERT INTO FRIEND_LIST(user_id)
+    values
+    (1),
+    (2),
+    (3),
+    (4);
+
+INSERT INTO FRIEND_LIST_FRIENDS(friend_list_id, profile_id)values
+
+(1,2),
+(1,3),
+(2,1),
+(3,1),
+(3,4),
+(4,3);
+
+UPDATE profile SET friend_list_id = 1 WHERE id = 1;
+UPDATE profile SET friend_list_id = 2 WHERE id = 2;
+UPDATE profile SET friend_list_id = 3 WHERE id = 3;
+UPDATE profile SET friend_list_id = 4 WHERE id = 4;
+
+UPDATE profile SET user_id = 1 WHERE id = 1;
+UPDATE profile SET user_id = 2 WHERE id = 2;
+UPDATE profile SET user_id = 3 WHERE id = 3;
+UPDATE profile SET user_id = 4 WHERE id = 4;
+
+
 

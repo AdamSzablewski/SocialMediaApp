@@ -1,10 +1,10 @@
-package com.adamszablewski.SocialMediaApp.controller.posts;
+package com.adamszablewski.SocialMediaApp.controller;
 
 import com.adamszablewski.SocialMediaApp.annotations.SecureContentResource;
 import com.adamszablewski.SocialMediaApp.annotations.SecureUserIdResource;
 import com.adamszablewski.SocialMediaApp.dtos.CommentDto;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Comment;
-import com.adamszablewski.SocialMediaApp.service.posts.CommentService;
+import com.adamszablewski.SocialMediaApp.service.CommentService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,7 +28,7 @@ public class CommentController {
                                                      @RequestParam(name = "userId") long userId,
                                                      @RequestBody Comment comment,
                                                      HttpServletRequest servletRequest){
-        commentService.postCommentForPost(postId, comment);
+        commentService.postCommentForPost(postId, comment, userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @PostMapping("/comment")
@@ -49,11 +49,17 @@ public class CommentController {
         commentService.deleteCommentForPost(postId, commentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+//    @GetMapping()
+//    public ResponseEntity<List<CommentDto>> getCommentsForPost(@RequestParam(name = "postId") long postId,
+//                                                                 HttpServletRequest servletRequest){
+//
+//        return  ResponseEntity.ok(commentService.getCommentsForPost(postId));
+//    }
     @GetMapping()
-    public ResponseEntity<List<CommentDto>> getCommentsForPost(@RequestParam(name = "postId") long postId,
-                                                                 HttpServletRequest servletRequest){
-
-        return  ResponseEntity.ok(commentService.getCommentsForPost(postId));
+    public ResponseEntity<List<CommentDto>> getCommentsForResource(@RequestParam(name = "resourceId") long resourceId,
+                                                               @RequestParam(name = "isComment") boolean isComment,
+                                                               HttpServletRequest servletRequest){
+        return  ResponseEntity.ok(commentService.getCommentsForResource(resourceId, isComment));
     }
     @DeleteMapping("/delete")
     @SecureContentResource(value = "commentId")

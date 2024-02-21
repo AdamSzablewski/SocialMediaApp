@@ -1,4 +1,5 @@
 package com.adamszablewski.SocialMediaApp.enteties.posts;
+import com.adamszablewski.SocialMediaApp.enteties.Person;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +15,8 @@ public class Upvote {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private long userId;
+    @ManyToOne
+    private Person user;
     private LocalDateTime dateTime;
     @ManyToOne
     private Post post;

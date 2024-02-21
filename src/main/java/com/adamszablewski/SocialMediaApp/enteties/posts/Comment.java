@@ -1,4 +1,5 @@
 package com.adamszablewski.SocialMediaApp.enteties.posts;
+import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.interfaces.Likeable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,8 @@ public class Comment implements Commentable, Likeable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String text;
-    private long userId;
+    @ManyToOne
+    private Person user;
     private LocalDateTime dateTime;
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Upvote> likes = new HashSet<>();

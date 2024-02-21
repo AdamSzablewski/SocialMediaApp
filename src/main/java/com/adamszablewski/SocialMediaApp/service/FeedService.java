@@ -1,4 +1,4 @@
-package com.adamszablewski.SocialMediaApp.service.posts;
+package com.adamszablewski.SocialMediaApp.service;
 
 
 import com.adamszablewski.SocialMediaApp.dtos.PostDto;
@@ -8,7 +8,9 @@ import com.adamszablewski.SocialMediaApp.utils.Mapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,9 +30,11 @@ public class FeedService {
                 .stream()
                 .map(feedUtil::getPostsForUser)
                 .flatMap(List::stream);
-
+        Set<Long> postIds = new HashSet<>();
         List<PostDto> feed = Stream.concat(userPosts, friendPosts)
                 .sorted(COMPARE_DAY_LIKE_COMMENT)
+                .filter(post -> postIds.add(post.getId()))
+                .filter(Post::isVisible)
                 .map(Mapper::mapPostToDto)
                 .limit(MAX_FEED_SIZE)
                 .collect(Collectors.toList());
@@ -39,29 +43,22 @@ public class FeedService {
         if (spotsLeft > 0){
             List<PostDto> publicPosts = feedUtil.getPublicPosts()
                     .stream()
+                    .filter(post -> postIds.add(post.getId()))
                     .map(Mapper::mapPostToDto)
                     .limit(spotsLeft)
                     .toList();
             feed.addAll(publicPosts);
         }
         return feed;
-//        return Stream.concat(
-//                feedUtil.getPostsForUser(userId).stream(),
-//                feedUtil.getFriendsForUser(userId).stream()
-//                        .map(feedUtil::getPostsForUser)
-//                        .flatMap(List::stream)
-//                )
-//                .sorted(COMPARE_DAY_LIKE_COMMENT)
-//                .map(Mapper::mapPostToDto)
-//                .limit(MAX_FEED_SIZE)
-//                .collect(Collectors.toList());
     }
 
 
     public List<PostDto> getPublicFeed() {
         return feedUtil.getPublicPosts()
                 .stream()
+                .filter(Post::isVisible)
                 .map(Mapper::mapPostToDto)
+                .limit(MAX_FEED_SIZE)
                 .toList();
 
     }

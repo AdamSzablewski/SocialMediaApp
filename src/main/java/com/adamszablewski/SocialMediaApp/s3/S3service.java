@@ -19,22 +19,22 @@ public class S3service {
 
 
     public void putObject(String bucketName, String key, byte[] byteFile){
-        PutObjectRequest objectRequest = PutObjectRequest.builder()
-                .bucket(s3buckets.getCustomer())
-                .key(key)
-                .build();
-        s3Client.putObject(objectRequest, RequestBody.fromBytes(byteFile));
+//        PutObjectRequest objectRequest = PutObjectRequest.builder()
+//                .bucket(s3buckets.getCustomer())
+//                .key(key)
+//                .build();
+       // s3Client.putObject(objectRequest, RequestBody.fromBytes(byteFile));
     }
-    public byte[] getObject(String bucketName, String key){
-        GetObjectRequest objectRequest = GetObjectRequest.builder()
-                .bucket(s3buckets.getCustomer())
-                .key(key)
-                .build();
-        ResponseInputStream<GetObjectResponse> response = s3Client.getObject(objectRequest);
-        try {
-            return response.readAllBytes();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    public byte[] getObject(String bucketName, String key){
+//        GetObjectRequest objectRequest = GetObjectRequest.builder()
+//                .bucket(s3buckets.getCustomer())
+//                .key(key)
+//                .build();
+//        //ResponseInputStream<GetObjectResponse> response = s3Client.getObject(objectRequest);
+////        try {
+////            return response.readAllBytes();
+////        } catch (IOException e) {
+////            throw new RuntimeException(e);
+////        }
+//    }
 }

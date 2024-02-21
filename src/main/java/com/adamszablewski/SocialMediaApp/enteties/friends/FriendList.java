@@ -1,5 +1,6 @@
 package com.adamszablewski.SocialMediaApp.enteties.friends;
 
+import com.adamszablewski.SocialMediaApp.enteties.Person;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,13 +18,15 @@ public class FriendList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @OneToOne
+    private Person user;
     @ManyToMany
     @JoinTable(
             name = "friend_list_friends",
             joinColumns = @JoinColumn(name = "friend_list_id"),
-            inverseJoinColumns = @JoinColumn(name = "friends_id")
+            inverseJoinColumns = @JoinColumn(name = "profile_id")
     )
-    private List<Friend> friends;
+    private List<Profile> friends;
 
 
 

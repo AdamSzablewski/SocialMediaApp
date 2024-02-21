@@ -2,14 +2,15 @@ package com.adamszablewski.SocialMediaApp.service.users;
 
 
 import com.adamszablewski.SocialMediaApp.dtos.PersonDto;
-import com.adamszablewski.SocialMediaApp.enteties.TermsOfUse;
-import com.adamszablewski.SocialMediaApp.enteties.posts.Profile;
-import com.adamszablewski.SocialMediaApp.enteties.users.Person;
+import com.adamszablewski.SocialMediaApp.enteties.friends.FriendList;
+import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
+import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.exceptions.IncompleteDataException;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchUserException;
 import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.ProfileRepository;
 import com.adamszablewski.SocialMediaApp.utils.EntityUtils;
+import com.adamszablewski.SocialMediaApp.utils.Mapper;
 import com.adamszablewski.SocialMediaApp.utils.UniqueIdGenerator;
 import com.adamszablewski.SocialMediaApp.utils.Validator;
 import lombok.AllArgsConstructor;
@@ -33,12 +34,14 @@ public class PersonService {
 
 
     public PersonDto getPerson(long userId) {
-        return entityUtils.mapPersonToDto(personRepository.findById(userId)
+        return Mapper.mapPersonToDto(personRepository.findById(userId)
                 .orElseThrow(NoSuchUserException::new));
     }
     public PersonDto getPerson(String email) {
-        return entityUtils.mapPersonToDto(personRepository.findByEmail(email)
-                .orElseThrow(NoSuchUserException::new));
+        Person user =  personRepository.findByEmail(email)
+                .orElseThrow(NoSuchUserException::new);
+        return Mapper.mapPersonToDto(user);
+
     }
     public void deleteUser(Long userId) {
         personRepository.deleteById(userId);
@@ -55,7 +58,6 @@ public class PersonService {
         String hashedPassword = hashPassword(person.getPassword());
         Profile profile = Profile.builder()
                 .build();
-
         Person newPerson = Person.builder()
                 .birthDate(person.getBirthDate())
                 .firstName(person.getFirstName())
@@ -67,6 +69,10 @@ public class PersonService {
                 .password(hashedPassword)
                 .profile(profile)
                 .build();
+        FriendList friendList = FriendList.builder()
+                .user(newPerson)
+                .build();
+        profile.setFriendList(friendList);
         personRepository.save(newPerson);
 
 

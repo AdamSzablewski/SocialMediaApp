@@ -3,7 +3,7 @@ package com.adamszablewski.SocialMediaApp.security;
 
 
 import com.adamszablewski.SocialMediaApp.dtos.LoginDto;
-import com.adamszablewski.SocialMediaApp.enteties.users.Person;
+import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.exceptions.InvalidCredentialsException;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchUserException;
 import com.adamszablewski.SocialMediaApp.repository.PersonRepository;

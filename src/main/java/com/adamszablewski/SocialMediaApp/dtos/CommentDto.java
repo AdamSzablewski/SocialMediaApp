@@ -17,8 +17,13 @@ import java.util.Set;
 public class CommentDto {
     @Id
     private long id;
+    private String username;
+    private String firstName;
+    private String lastName;
     private String text;
     private long userId;
-    private Set<UpvoteDto> likes;
+    private Set<UpvoteDto> likesDetailed;
+    private int likes;
+    private int comments;
     private List<CommentDto> answers;
 }
