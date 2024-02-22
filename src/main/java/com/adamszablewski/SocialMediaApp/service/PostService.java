@@ -50,8 +50,11 @@ public class PostService {
         return post;
     }
     public Post createPost(PostType postType,  long userId, boolean isPublic){
+        Person user = personRepository.findById(userId)
+                .orElseThrow(NoSuchUserException::new);
         return Post.builder()
                 .postType(postType)
+                .person(user)
                 .userId(userId)
                 .isPublic(isPublic)
                 .comments(new ArrayList<>())

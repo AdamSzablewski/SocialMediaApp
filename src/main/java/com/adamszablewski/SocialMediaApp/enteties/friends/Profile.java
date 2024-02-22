@@ -36,9 +36,9 @@ public class Profile {
     @Override
     public String toString() {
         return "Profile{" +
-//                "id=" + id +
-//                ", profilePhoto=" + profilePhoto +
-//                ", posts=" + posts +
+                "id=" + id +
+                ", user=" + user.getFirstName()+" "+user.getLastName() +
+                ", profilePhoto=" + profilePhoto +
                 '}';
     }
 }

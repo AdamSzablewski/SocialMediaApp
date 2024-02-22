@@ -18,13 +18,13 @@ UPDATE person SET profile_id = 5 WHERE id = 5;
 
 
 -- Sample text posts
-INSERT INTO post (user_id, is_public, post_type, creation_time, text, visible, multimedia_id)
+INSERT INTO post (user_id,person_id, is_public, post_type, creation_time, text, visible, multimedia_id)
 VALUES
-(1, true, 1, '2023-01-01 10:00:00', 'This is my first post!', true, NULL),
-(2, true, 1, '2023-01-02 11:00:00', 'Just sharing my thoughts.', true, NULL),
-(3, true, 1, '2023-01-03 12:00:00', 'Hello world!', true, NULL),
-(4, true, 1, '2023-01-04 13:00:00', 'Feeling excited today!', true, NULL),
-(5, true, 1, '2023-01-05 14:00:00', 'Enjoying the sunny weather.', true, NULL);
+(1,1, true, 1, '2023-01-01 10:00:00', 'This is my first post!', true, NULL),
+(2,2, true, 1, '2023-01-02 11:00:00', 'Just sharing my thoughts.', true, NULL),
+(3,3, true, 1, '2023-01-03 12:00:00', 'Hello world!', true, NULL),
+(4,4, true, 1, '2023-01-04 13:00:00', 'Feeling excited today!', true, NULL),
+(5,5, true, 1, '2023-01-05 14:00:00', 'Enjoying the sunny weather.', true, NULL);
 
 
 INSERT INTO comment (text, user_id, date_time)
@@ -74,6 +74,10 @@ UPDATE profile SET user_id = 1 WHERE id = 1;
 UPDATE profile SET user_id = 2 WHERE id = 2;
 UPDATE profile SET user_id = 3 WHERE id = 3;
 UPDATE profile SET user_id = 4 WHERE id = 4;
+
+INSERT INTO FRIEND_REQUEST  (sender_id, receiver_id, date_time)
+VALUES (4, 1, CURRENT_DATE);
+
 
 
 

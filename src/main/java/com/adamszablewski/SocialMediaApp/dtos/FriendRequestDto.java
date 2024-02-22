@@ -1,8 +1,6 @@
 package com.adamszablewski.SocialMediaApp.dtos;
 
-import com.adamszablewski.SocialMediaApp.enteties.Person;
-import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
-import jakarta.persistence.*;
+import com.adamszablewski.SocialMediaApp.enteties.friends.FriendRequestStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,11 +12,12 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Builder
-public class FriendListDto {
+public class FriendRequestDto {
     private long id;
 
-    private PersonDto user;
-    private List<ProfileDto> friends;
+    private ProfileDto receiver;
+    private ProfileDto sender;
+    private FriendRequestStatus status;
 
 
 

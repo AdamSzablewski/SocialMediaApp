@@ -1,9 +1,6 @@
 package com.adamszablewski.SocialMediaApp.enteties.friends;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,8 +17,10 @@ public class FriendRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private long senderId;
-    private long receiverId;
+    @ManyToOne
+    private Profile sender;
+    @ManyToOne
+    private Profile receiver;
     private LocalDateTime dateTime;
     private FriendRequestStatus status;
 }

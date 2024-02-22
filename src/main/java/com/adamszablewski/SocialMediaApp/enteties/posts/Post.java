@@ -1,5 +1,6 @@
 package com.adamszablewski.SocialMediaApp.enteties.posts;
 
+import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.interfaces.Likeable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,8 @@ public class Post implements Commentable, Likeable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private long userId;
+    @ManyToOne
+    private Person person;
     private boolean isPublic;
     private PostType postType;
     private LocalDateTime creationTime;

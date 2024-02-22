@@ -15,6 +15,7 @@ import java.util.Set;
 @Data
 public class PostDto {
     private long id;
+    private PersonDto personDto;
     private long userId;
     private String text;
     private String multimediaId;

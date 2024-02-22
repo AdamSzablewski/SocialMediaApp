@@ -4,6 +4,7 @@ package com.adamszablewski.SocialMediaApp.utils;
 import com.adamszablewski.SocialMediaApp.dtos.*;
 import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.enteties.friends.FriendList;
+import com.adamszablewski.SocialMediaApp.enteties.friends.FriendRequest;
 import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Comment;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Post;
@@ -17,6 +18,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class Mapper {
+
+
     public <T extends Identifiable> Set<Long> convertObjectListToIdSet(Collection<T> collection){
         return collection.stream()
                 .map(Identifiable::getId)
@@ -39,6 +42,7 @@ public class Mapper {
         return PostDto.builder()
                 .id(post.getId())
                 .userId(post.getUserId())
+                .personDto(mapPersonToDto(post.getPerson(), true))
                 .userLikeIds(post.getLikes() == null ? new HashSet<>() : mapUpvoteDto(post.getLikes()))
                 .likes(countLikes(post))
                 .comments(post.getComments() == null ? new ArrayList<>() : mapCommentToDto(post.getComments()))
@@ -90,18 +94,51 @@ public class Mapper {
                 .joinDate(person.getJoinDate().toLocalDate())
                 .build();
     }
+
+    public static PersonDto mapPersonToDto(Person person, boolean limited) {
+        if(person == null) return null;
+        return PersonDto.builder()
+                .id(person.getId())
+                .birthDate(person.getBirthDate())
+                .firstName(person.getFirstName())
+                .lastName(person.getLastName())
+                .birthDate(person.getBirthDate())
+                .joinDate(person.getJoinDate().toLocalDate())
+                .build();
+    }
+    public static List<ProfileDto> mapProfileToDto(List<Profile> profiles){
+        return profiles.stream()
+                .map(Mapper::mapProfileToDto)
+                .toList();
+    }
+    public static List<ProfileDto> mapProfileToDto(List<Profile> profiles, boolean limited){
+        return profiles.stream()
+                .map(profile -> mapProfileToDto(profile, true))
+                .toList();
+    }
     public static ProfileDto mapProfileToDto(Profile profile){
         return ProfileDto.builder()
                 .profilePhoto(profile.getProfilePhoto())
+                .user(mapPersonToDto(profile.getUser(), true))
                 .friendList(mapFriendListToDto(profile.getFriendList()))
+                .build();
+    }
+
+    public static ProfileDto mapProfileToDto(Profile profile, boolean limited){
+        return ProfileDto.builder()
+                .profilePhoto(profile.getProfilePhoto())
+                .user(mapPersonToDto(profile.getUser(), true))
                 .build();
     }
     public static FriendListDto mapFriendListToDto(FriendList friendList){
         return FriendListDto.builder()
-                .friends(getFriendIds(friendList))
+                .friends(mapProfileToDto(friendList.getFriends(), true))
                 .build();
     }
     public static List<Long> getFriendIds(FriendList friendList){
+        if(friendList == null){
+            return new ArrayList<>();
+        }
         List<Long> friendIds = new ArrayList<>();
         friendList.getFriends().forEach(profile -> {
             if(profile.getUser() != null){
@@ -109,5 +146,19 @@ public class Mapper {
             }
         });
         return friendIds;
+    }
+
+    public static List<FriendRequestDto> mapFriendRequestToDto(List<FriendRequest> friendRequests) {
+        return friendRequests.stream()
+                .map(Mapper::mapFriendRequestToDto)
+                .toList();
+    }
+    public static FriendRequestDto mapFriendRequestToDto(FriendRequest friendRequest){
+        return FriendRequestDto.builder()
+                .id(friendRequest.getId())
+                .status(friendRequest.getStatus())
+                .sender(mapProfileToDto(friendRequest.getSender()))
+                .receiver(mapProfileToDto(friendRequest.getReceiver()))
+                .build();
     }
 }

@@ -20,6 +20,7 @@ import java.util.List;
 public class ProfileDto {
     private long id;
     private Image profilePhoto;
+    private PersonDto user;
     private List<PostDto> posts = new ArrayList<>();
     private FriendListDto friendList;
 
