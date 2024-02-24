@@ -1,5 +1,6 @@
 package com.adamszablewski.SocialMediaApp.enteties.friends;
 
+import com.adamszablewski.SocialMediaApp.enteties.Conversation;
 import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.enteties.friends.FriendList;
 import com.adamszablewski.SocialMediaApp.enteties.multimedia.Image;
@@ -32,6 +33,7 @@ public class Profile {
     private List<Post> posts = new ArrayList<>();
     @OneToOne(cascade = CascadeType.ALL)
     private FriendList friendList;
+
 
     @Override
     public String toString() {

@@ -21,6 +21,6 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
 //            "WHERE c.participants p = :participantIds")
     List<Conversation> findAllByParticipantsIn(@Param("participants") Set<Long> participants);
 
-    List<Conversation> findAlByParticipantsContaining(@Param("userId") Long userId);
+    List<Conversation> findAlByParticipantsContaining(@Param("userId") Long profile);
 
 }

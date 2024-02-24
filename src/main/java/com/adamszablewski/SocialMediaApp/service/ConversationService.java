@@ -10,6 +10,7 @@ import com.adamszablewski.SocialMediaApp.utils.Mapper;
 import com.adamszablewski.SocialMediaApp.utils.UserValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -56,11 +57,12 @@ public class ConversationService {
         users.add(user1Id);
         users.add(user2Id);
         List<Conversation> conversations= conversationRepository.findAllByParticipantsIn(users);
-            return conversations.stream()
-                    .filter(conversation -> conversation.getParticipants().contains(user1Id) && conversation.getParticipants().contains(user2Id))
-                    .map(Mapper::mapConversationToDTO)
-                    .findFirst()
-                    .orElseGet( ()-> Mapper.mapConversationToDTO(createConversation(users)));
+        Conversation foundConversation = conversations.stream()
+                .filter(conversation -> conversation.getParticipants().contains(user1Id) && conversation.getParticipants().contains(user2Id))
+                .findFirst()
+                .orElseGet( ()-> createConversation(users));
+        return Mapper.mapConversationToDTO(foundConversation);
+
     }
     /**
      *Creates a conversation for user ID's in the provided Set
@@ -69,14 +71,20 @@ public class ConversationService {
      * @return A Conversation object.
      *
      */
+    @Transactional
     private Conversation createConversation(Set<Long> users) {
-
+        System.out.println("creating called");
         Conversation conversation = Conversation.builder()
                 .isSystemConversation(false)
                 .participants(users)
-                .messages(new ArrayList<>())
                 .build();
         conversationRepository.save(conversation);
+        users.forEach(userId -> {
+            Profile profile = profileRepository.findByUserId(userId)
+                    .orElseThrow(NoSuchUserException::new);
+            conversation.getProfiles().add(profile);
+        });
+        System.out.println(conversation);
         return conversation;
     }
 
