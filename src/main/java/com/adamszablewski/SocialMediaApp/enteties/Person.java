@@ -27,7 +27,6 @@ public class Person implements Identifiable {
     private LocalDate birthDate;
     private String password;
     private LocalDateTime joinDate;
-    private TermsOfUse termsOfUse;
     @OneToOne(cascade = CascadeType.ALL)
     private Profile profile;
 

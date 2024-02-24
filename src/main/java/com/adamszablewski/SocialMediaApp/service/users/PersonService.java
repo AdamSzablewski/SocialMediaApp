@@ -7,6 +7,7 @@ import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
 import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.exceptions.IncompleteDataException;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchUserException;
+import com.adamszablewski.SocialMediaApp.repository.FriendListRepository;
 import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.ProfileRepository;
 import com.adamszablewski.SocialMediaApp.utils.EntityUtils;
@@ -16,6 +17,7 @@ import com.adamszablewski.SocialMediaApp.utils.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -29,6 +31,7 @@ public class PersonService {
     private final EntityUtils entityUtils;
     private final UniqueIdGenerator uniqueIdGenerator;
     private final ProfileRepository profileRepository;
+    private final FriendListRepository friendListRepository;
     private final PasswordEncoder passwordEncoder;
     private final Validator validator;
 
@@ -50,33 +53,49 @@ public class PersonService {
     public String hashPassword(String password) {
         return passwordEncoder.encode(password);
     }
-    public void createUser(Person person) {
-        boolean valuesValidated = validator.validatePersonValues(person);
+    @Transactional
+    public void createUser(Person personData) {
+        boolean valuesValidated = validator.validatePersonValues(personData);
         if (!valuesValidated){
             throw new IncompleteDataException();
         }
-        String hashedPassword = hashPassword(person.getPassword());
-        Profile profile = Profile.builder()
-                .build();
-        Person newPerson = Person.builder()
-                .birthDate(person.getBirthDate())
-                .firstName(person.getFirstName())
-                .lastName(person.getLastName())
-                .phoneNumber(person.getPhoneNumber())
-                .joinDate(LocalDateTime.now())
-                .termsOfUse(ACCEPTED)
-                .email(person.getEmail())
-                .password(hashedPassword)
-                .profile(profile)
-                .build();
-        FriendList friendList = FriendList.builder()
-                .user(newPerson)
-                .build();
+        String hashedPassword = hashPassword(personData.getPassword());
+        Profile profile = createProfile();
+        Person person = createPerson();
+        FriendList friendList = createFriendlist();
+
+        person.setBirthDate(personData.getBirthDate());
+        person.setFirstName(personData.getFirstName());
+        person.setLastName(personData.getLastName());
+        person.setPhoneNumber(personData.getPhoneNumber());
+        person.setEmail(personData.getEmail());
+        person.setJoinDate(LocalDateTime.now());
+        person.setProfile(profile);
+        person.setPassword(hashedPassword);
+
+        friendList.setUser(person);
+        profile.setUser(person);
         profile.setFriendList(friendList);
-        personRepository.save(newPerson);
 
+        personRepository.save(person);
+        friendListRepository.save(friendList);
+        profileRepository.save(profile);
+    }
 
-
+    private Person createPerson(){
+        Person person = new Person();
+        personRepository.save(person);
+        return person;
+    }
+    private Profile createProfile(){
+        Profile profile = new Profile();
+        profileRepository.save(profile);
+        return profile;
+    }
+    private FriendList createFriendlist(){
+        FriendList friendList = new FriendList();
+        friendListRepository.save(friendList);
+        return friendList;
     }
 
     public long getUserIdForUsername(String email) {

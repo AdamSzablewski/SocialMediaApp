@@ -2,6 +2,8 @@ package com.adamszablewski.SocialMediaApp.utils;
 
 
 import com.adamszablewski.SocialMediaApp.dtos.*;
+import com.adamszablewski.SocialMediaApp.enteties.Conversation;
+import com.adamszablewski.SocialMediaApp.enteties.Message;
 import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.enteties.friends.FriendList;
 import com.adamszablewski.SocialMediaApp.enteties.friends.FriendRequest;
@@ -11,12 +13,14 @@ import com.adamszablewski.SocialMediaApp.enteties.posts.Post;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Upvote;
 import com.adamszablewski.SocialMediaApp.interfaces.Identifiable;
 import com.adamszablewski.SocialMediaApp.interfaces.UserResource;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
+@AllArgsConstructor
 public class Mapper {
 
 
@@ -38,6 +42,7 @@ public class Mapper {
                 .map(Mapper::mapPostToDto)
                 .collect(Collectors.toList());
     }
+
     public static PostDto mapPostToDto(Post post){
         return PostDto.builder()
                 .id(post.getId())
@@ -111,6 +116,11 @@ public class Mapper {
                 .map(Mapper::mapProfileToDto)
                 .toList();
     }
+    public static Set<ProfileDto> mapProfileToDto(Set<Profile> profiles){
+        return profiles.stream()
+                .map(Mapper::mapProfileToDto)
+                .collect(Collectors.toSet());
+    }
     public static List<ProfileDto> mapProfileToDto(List<Profile> profiles, boolean limited){
         return profiles.stream()
                 .map(profile -> mapProfileToDto(profile, true))
@@ -161,4 +171,46 @@ public class Mapper {
                 .receiver(mapProfileToDto(friendRequest.getReceiver()))
                 .build();
     }
+
+    public static MessageDTO mapMessageToDTO(Message message){
+        return MessageDTO.builder()
+                .id(message.getId())
+                .sender(mapProfileToDto(message.getSender(), true))
+                .message(message.getText())
+                .dateTime(message.getDateTime())
+                .build();
+    }
+    public static List<MessageDTO> mapMessageToDTO(List<Message> messages){
+        return messages.stream()
+                .map(Mapper::mapMessageToDTO)
+                .toList();
+    }
+
+    public static ConversationDTO mapConversationToDTO(Conversation conversation){
+        return ConversationDTO.builder()
+                .id(conversation.getId())
+                .participants(conversation.getParticipants())
+                .messages(mapMessageToDTO(conversation.getMessages()))
+                .build();
+    }
+    public static ConversationDTO mapConversationToDTO(Conversation conversation, boolean limited){
+        return ConversationDTO.builder()
+                .id(conversation.getId())
+                .participants(conversation.getParticipants())
+                .build();
+    }
+
+//    public static List<ConversationDTO> mapConversationToDTO(List<Conversation> conversations){
+//        List<ConversationDTO> conversationDTOS = new ArrayList<>();
+//        conversations.forEach(conversation -> {
+//
+//            conversationDTOS.add(ConversationDTO.builder()
+//                    .id(conversation.getId())
+//                    .user(conversation.getUser())
+//                    .messages(mapMessageToDTO(conversation.getMessages()))
+//                    .build());
+//        });
+//
+//        return conversationDTOS;
+//    }
 }

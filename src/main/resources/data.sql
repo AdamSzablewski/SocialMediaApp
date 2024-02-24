@@ -1,14 +1,17 @@
 -- Inserting example users
-INSERT INTO person ( first_name, last_name, email, phone_number, birth_date, password, terms_of_use, join_date)
+INSERT INTO person ( first_name, last_name, email, phone_number, birth_date, password, join_date)
 VALUES
-('Adam', 'Szablewski', 'adamszablewski@example.com', '123456789', '2000-01-12', '$2a$10$5GZFpc2NeEjqaRj.VVMlwOZI9OTrsxSWOe9gNwrTpPAub.n2gICYO', 1, '2010-01-12'),
-('Jane', 'Smith', 'jane.smith@example.com', '987654321', '1995-05-15', 'a1', 1, '2010-01-12'),
-('Alice', 'Johnson', 'alice.johnson@example.com', '555555555', '1988-09-20', 'a1', 1, '2010-01-12'),
-('Bob', 'Brown', 'bob.brown@example.com', '999999999', '1985-03-10', 'a1', 1, '2010-01-12'),
-('Eve', 'Wilson', 'eve.wilson@example.com', '777777777', '1998-11-30', 'a1', 1, '2010-01-12');
+('Adam', 'Szablewski', 'adamszablewski@example.com', '123456789', '2000-01-12', '$2a$10$5GZFpc2NeEjqaRj.VVMlwOZI9OTrsxSWOe9gNwrTpPAub.n2gICYO', '2010-01-12'),
+('Jane', 'Smith', 'jane.smith@example.com', '987654321', '1995-05-15', 'a1', '2010-01-12'),
+('Alice', 'Johnson', 'alice.johnson@example.com', '555555555', '1988-09-20', 'a1', '2010-01-12'),
+('Bob', 'Brown', 'bob.brown@example.com', '999999999', '1985-03-10', 'a1', '2010-01-12'),
+('Eve', 'Wilson', 'eve.wilson@example.com', '777777777', '1998-11-30', 'a1', '2010-01-12');
 
-INSERT INTO profile (id) VALUES (1), (2), (3), (4), (5);
-
+INSERT INTO profile DEFAULT VALUES;
+INSERT INTO profile DEFAULT VALUES;
+INSERT INTO profile DEFAULT VALUES;
+INSERT INTO profile DEFAULT VALUES;
+INSERT INTO profile DEFAULT VALUES;
 -- Updating example users to associate them with profiles
 UPDATE person SET profile_id = 1 WHERE id = 1;
 UPDATE person SET profile_id = 2 WHERE id = 2;
