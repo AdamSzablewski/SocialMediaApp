@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,18 +24,11 @@ public class Conversation  {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
-    @ElementCollection
-    private Set<Long> participants;
-    @ManyToMany
-    @JoinTable(
-            name = "conversation_profile",
-            joinColumns = @JoinColumn(name = "conversation_id"),
-            inverseJoinColumns = @JoinColumn(name = "profile_id")
-    )
-    private Set<Profile> profiles;
+
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
-    private List<Message> messages;
+    private List<Message> messages = new ArrayList<>();
     private boolean isSystemConversation;
+    private List<String> names;
 
 
     @Override

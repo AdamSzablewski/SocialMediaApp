@@ -3,6 +3,8 @@ package com.adamszablewski.SocialMediaApp.service;
 import com.adamszablewski.SocialMediaApp.dtos.ConversationDTO;
 import com.adamszablewski.SocialMediaApp.enteties.Conversation;
 import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
+import com.adamszablewski.SocialMediaApp.exceptions.NoSuchConversationFoundException;
+import com.adamszablewski.SocialMediaApp.exceptions.NoSuchProfileException;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchUserException;
 import com.adamszablewski.SocialMediaApp.repository.ConversationRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.ProfileRepository;
@@ -53,48 +55,74 @@ public class ConversationService {
      * @throws IllegalArgumentException if user1Id or user2Id is invalid (e.g., negative).
      */
     public ConversationDTO getCoversationsBetweenUsers(long user1Id, long user2Id) {
-        Set<Long> users = new HashSet<>();
-        users.add(user1Id);
-        users.add(user2Id);
-        List<Conversation> conversations= conversationRepository.findAllByParticipantsIn(users);
-        Conversation foundConversation = conversations.stream()
-                .filter(conversation -> conversation.getParticipants().contains(user1Id) && conversation.getParticipants().contains(user2Id))
-                .findFirst()
-                .orElseGet( ()-> createConversation(users));
-        return Mapper.mapConversationToDTO(foundConversation);
+
+        Profile profile1 = profileRepository.findByUserId(user1Id)
+                .orElseThrow(NoSuchUserException::new);
+        Profile profile2 = profileRepository.findByUserId(user2Id)
+                .orElseThrow(NoSuchUserException::new);
+
+        for(Conversation conversation : profile1.getConversations()){
+            if(profile2.getConversations().contains(conversation)){
+                return Mapper.mapConversationToDTO(conversation, Set.of(profile1, profile2), true);
+            }
+        }
+
+        Conversation newConversation = createConversation(profile1, profile2);
+        return Mapper.mapConversationToDTO(newConversation, Set.of(profile1, profile2), true);
 
     }
     /**
      *Creates a conversation for user ID's in the provided Set
      *
-     * @param users Set of ID's of conversation participants.
+    // * @param users Set of ID's of conversation participants.
      * @return A Conversation object.
      *
      */
     @Transactional
-    private Conversation createConversation(Set<Long> users) {
-        System.out.println("creating called");
+    private Conversation createConversation(Profile profile1, Profile profile2) {
         Conversation conversation = Conversation.builder()
                 .isSystemConversation(false)
-                .participants(users)
+                .messages(new ArrayList<>())
+                .names(getNamesForProfiles(List.of(profile1, profile2)))
                 .build();
         conversationRepository.save(conversation);
-        users.forEach(userId -> {
-            Profile profile = profileRepository.findByUserId(userId)
-                    .orElseThrow(NoSuchUserException::new);
-            conversation.getProfiles().add(profile);
-        });
-        System.out.println(conversation);
+        profile1.getConversations().add(conversation);
+        profile2.getConversations().add(conversation);
+
+        profileRepository.save(profile1);
+        profileRepository.save(profile2);
+
         return conversation;
     }
 
     public List<ConversationDTO> getAllConversationsForUser(long userId) {
         Profile profile = profileRepository.findById(userId)
                 .orElseThrow(NoSuchUserException::new);
-        return conversationRepository.findAlByParticipantsContaining(userId)
+        return profile.getConversations()
                 .stream()
                 .map(Mapper::mapConversationToDTO)
                 .toList();
+    }
+
+    public List<String> getNamesForProfiles(List<Profile> profiles){
+        List<String> names = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        for(Profile profile : profiles){
+            sb.append(profile.getUser().getFirstName());
+            sb.append(" ");
+            sb.append(profile.getUser().getLastName());
+            sb.append(" ");
+            names.add(sb.toString());
+            sb.setLength(0);
+        }
+        System.out.println("names "+names);
+        return names;
+    }
+
+    public ConversationDTO getCoversationById(long conversationId) {
+        return Mapper.mapConversationToDTO(conversationRepository.findById(conversationId)
+                .orElseThrow(NoSuchConversationFoundException::new));
+
     }
 
 

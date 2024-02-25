@@ -37,6 +37,17 @@ public class ConversationController {
 
         return ResponseEntity.ok(conversationService.getCoversationsBetweenUsers(user1Id, user2Id));
     }
+    @GetMapping("/id")
+    @SecureUserIdResource
+    @CircuitBreaker(name = "messagingServiceCircuitBreaker", fallbackMethod = "fallBackMethod")
+    @RateLimiter(name = "messagingServiceRateLimiter")
+    public ResponseEntity<ConversationDTO> getCoversationById(@RequestParam("conversationId") long conversationId,
+                                                              @RequestParam("userId") long userId,
+                                                              HttpServletRequest httpServletRequest){
+
+
+        return ResponseEntity.ok(conversationService.getCoversationById(conversationId));
+    }
     @GetMapping("/user")
     @SecureUserIdResource
     @CircuitBreaker(name = "messagingServiceCircuitBreaker", fallbackMethod = "fallBackMethod")

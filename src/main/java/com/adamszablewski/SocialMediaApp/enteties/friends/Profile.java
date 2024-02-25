@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.jmx.export.annotation.ManagedNotification;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -33,7 +34,8 @@ public class Profile {
     private List<Post> posts = new ArrayList<>();
     @OneToOne(cascade = CascadeType.ALL)
     private FriendList friendList;
-
+    @ManyToMany
+    private List<Conversation> conversations;
 
     @Override
     public String toString() {

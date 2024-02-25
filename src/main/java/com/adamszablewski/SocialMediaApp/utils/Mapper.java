@@ -189,16 +189,16 @@ public class Mapper {
     public static ConversationDTO mapConversationToDTO(Conversation conversation){
         return ConversationDTO.builder()
                 .id(conversation.getId())
-                .participants(conversation.getParticipants())
-                .profiles(mapProfileToDto(conversation.getProfiles()))
+                .participants(conversation.getNames())
                 .messages(mapMessageToDTO(conversation.getMessages()))
                 .build();
     }
-    public static ConversationDTO mapConversationToDTO(Conversation conversation, boolean limited){
+    public static ConversationDTO mapConversationToDTO(Conversation conversation, Set<Profile> profiles, boolean limited){
         return ConversationDTO.builder()
                 .id(conversation.getId())
-                .profiles(mapProfileToDto(conversation.getProfiles()))
-                .participants(conversation.getParticipants())
+                .participants(conversation.getNames())
+                .messages(mapMessageToDTO(conversation.getMessages()))
+                .profiles(mapProfileToDto(profiles))
                 .build();
     }
 

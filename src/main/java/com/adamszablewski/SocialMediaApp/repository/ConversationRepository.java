@@ -16,11 +16,5 @@ import java.util.Set;
 @Repository
 public interface ConversationRepository extends JpaRepository<Conversation, Long> {
 
-//    @Query("SELECT c FROM Conversation c WHERE c.participants = :participants")
-//    @Query("SELECT c FROM Conversation c " +
-//            "WHERE c.participants p = :participantIds")
-    List<Conversation> findAllByParticipantsIn(@Param("participants") Set<Long> participants);
-
-    List<Conversation> findAlByParticipantsContaining(@Param("userId") Long profile);
 
 }
