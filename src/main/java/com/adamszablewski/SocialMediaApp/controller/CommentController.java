@@ -49,12 +49,6 @@ public class CommentController {
         commentService.deleteCommentForPost(postId, commentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-//    @GetMapping()
-//    public ResponseEntity<List<CommentDto>> getCommentsForPost(@RequestParam(name = "postId") long postId,
-//                                                                 HttpServletRequest servletRequest){
-//
-//        return  ResponseEntity.ok(commentService.getCommentsForPost(postId));
-//    }
     @GetMapping()
     public ResponseEntity<List<CommentDto>> getCommentsForResource(@RequestParam(name = "resourceId") long resourceId,
                                                                @RequestParam(name = "isComment") boolean isComment,

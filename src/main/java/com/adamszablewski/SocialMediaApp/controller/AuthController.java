@@ -3,6 +3,7 @@ package com.adamszablewski.SocialMediaApp.controller;
 
 import com.adamszablewski.SocialMediaApp.annotations.SecureUserIdResource;
 import com.adamszablewski.SocialMediaApp.dtos.LoginDto;
+import com.adamszablewski.SocialMediaApp.enteties.JWT;
 import com.adamszablewski.SocialMediaApp.security.SecurityService;
 import com.adamszablewski.SocialMediaApp.service.users.PersonService;
 import lombok.AllArgsConstructor;
@@ -30,11 +31,10 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDto user){
+    public ResponseEntity<JWT> login(@RequestBody LoginDto user){
 
         securityService.validateUser(user);
-        String token = securityService.generateTokenFromEmail(user.getUsername());
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(securityService.generateTokenFromEmail(user.getUsername()));
     }
 
 }

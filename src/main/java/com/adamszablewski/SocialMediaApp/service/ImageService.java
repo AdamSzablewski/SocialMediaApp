@@ -1,10 +1,15 @@
-package com.adamszablewski.SocialMediaApp.service.multimedia;
+package com.adamszablewski.SocialMediaApp.service;
 
 
+import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
 import com.adamszablewski.SocialMediaApp.enteties.multimedia.Image;
 import com.adamszablewski.SocialMediaApp.enteties.multimedia.ProfilePhoto;
+import com.adamszablewski.SocialMediaApp.enteties.multimedia.Video;
+import com.adamszablewski.SocialMediaApp.exceptions.NoSuchUserException;
 import com.adamszablewski.SocialMediaApp.repository.ImageRepositroy;
 import com.adamszablewski.SocialMediaApp.repository.ProfilePhotoRepository;
+import com.adamszablewski.SocialMediaApp.repository.VideoRepository;
+import com.adamszablewski.SocialMediaApp.repository.posts.ProfileRepository;
 import com.adamszablewski.SocialMediaApp.s3.S3buckets;
 import com.adamszablewski.SocialMediaApp.s3.S3service;
 import com.adamszablewski.SocialMediaApp.utils.UniqueIdGenerator;
@@ -23,6 +28,8 @@ public class ImageService {
     private final S3service s3service;
     private final S3buckets s3buckets;
     private final UniqueIdGenerator uniqueIdGenerator;
+    private final ProfileRepository profileRepository;
+    private final VideoRepository videoRepository;
 
     private final ImageRepositroy imageRepositroy;
     private final ProfilePhotoRepository profilePhotoRepository;
@@ -33,7 +40,7 @@ public class ImageService {
             throw new RuntimeException("Wrong imageID");
         }
         try {
-            s3service.putObject(s3buckets.getCustomer(),
+            s3service.putObject(s3buckets.getImageBucket(),
                     multimediaId,
                     file.getBytes());
         } catch (IOException e) {
@@ -64,35 +71,62 @@ public class ImageService {
 
     public Image createPhoto(long userId){
         String multimediaId = uniqueIdGenerator.generateUniqueImageId();
-        return Image.builder()
+        Image image =  Image.builder()
                 .userId(userId)
                 .multimediaId(multimediaId)
                 .localDateTime(LocalDateTime.now())
                 .build();
+        imageRepositroy.save(image);
+        return image;
     }
     public Image createPhoto(long userId, String multimediaId){
-        return Image.builder()
+        Image image =  Image.builder()
                 .userId(userId)
                 .multimediaId(multimediaId)
                 .localDateTime(LocalDateTime.now())
                 .build();
+        imageRepositroy.save(image);
+        return image;
     }
 
 
-    public void upploadVideoToS3(MultipartFile video, String multimediaId) {
+    public String upploadVideoToS3(MultipartFile file, String multimediaId) {
+        if(multimediaId.length() == 0){
+            throw new RuntimeException("Wrong imageID");
+        }
+        try {
+            s3service.putObject(s3buckets.getVideoBucket(),
+                    multimediaId,
+                    file.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return multimediaId;
+    }
+
+    public Video createVideo(long userId){
+        String multimediaId = uniqueIdGenerator.generateUniqueVideoId();
+        Video video = Video.builder()
+                .multimediaId(multimediaId)
+                .userId(userId)
+                .localDateTime(LocalDateTime.now())
+                .build();
+        videoRepository.save(video);
+        return video;
     }
 
     public void updateProfilePhoto(MultipartFile photo, long userId) {
         Image image = createPhotoResource(photo, userId);
-        ProfilePhoto profilePhoto = profilePhotoRepository.findByUserId(userId)
-                .orElseGet(() -> createProfilePhoto(userId));
-        if(profilePhoto.getImage() != null){
-            Image imageToDelete = profilePhoto.getImage();
-            profilePhoto.setImage(null);
+        Profile profile = profileRepository.findByUserId(userId)
+                .orElseThrow(NoSuchUserException::new);
+
+        if(profile.getProfilePhoto() != null){
+            Image imageToDelete = profile.getProfilePhoto();
+            profile.setProfilePhoto(null);
             deleteImage(imageToDelete);
         }
-        profilePhoto.setImage(image);
-        profilePhotoRepository.save(profilePhoto);
+        profile.setProfilePhoto(image);
+        profileRepository.save(profile);
     }
     public ProfilePhoto createProfilePhoto(long userId){
         ProfilePhoto profilePhoto = ProfilePhoto.builder()

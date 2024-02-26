@@ -2,9 +2,10 @@ package com.adamszablewski.SocialMediaApp.controller;
 
 
 import com.adamszablewski.SocialMediaApp.annotations.SecureContentResource;
+import com.adamszablewski.SocialMediaApp.annotations.SecureResource;
+import com.adamszablewski.SocialMediaApp.annotations.SecureReturnedContentResource;
 import com.adamszablewski.SocialMediaApp.annotations.SecureUserIdResource;
 import com.adamszablewski.SocialMediaApp.dtos.ConversationDTO;
-import com.adamszablewski.SocialMediaApp.enteties.Conversation;
 import com.adamszablewski.SocialMediaApp.exceptions.CustomExceptionHandler;
 import com.adamszablewski.SocialMediaApp.repository.ConversationRepository;
 import com.adamszablewski.SocialMediaApp.service.ConversationService;
@@ -27,40 +28,36 @@ public class ConversationController {
     private final ConversationRepository conversationRepository;
 
     @GetMapping()
-    @SecureUserIdResource
-    @CircuitBreaker(name = "messagingServiceCircuitBreaker", fallbackMethod = "fallBackMethod")
-    @RateLimiter(name = "messagingServiceRateLimiter")
+    @SecureResource
+    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
+    @RateLimiter(name = "rateLimiter")
     public ResponseEntity<ConversationDTO> getCoversationBetweenUsers(@RequestParam("user1Id") long user1Id,
                                                                       @RequestParam("user2Id") long user2Id,
                                                                       HttpServletRequest httpServletRequest){
-
-
         return ResponseEntity.ok(conversationService.getCoversationsBetweenUsers(user1Id, user2Id));
     }
     @GetMapping("/id")
     @SecureUserIdResource
-    @CircuitBreaker(name = "messagingServiceCircuitBreaker", fallbackMethod = "fallBackMethod")
-    @RateLimiter(name = "messagingServiceRateLimiter")
+    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
+    @RateLimiter(name = "rateLimiter")
     public ResponseEntity<ConversationDTO> getCoversationById(@RequestParam("conversationId") long conversationId,
                                                               @RequestParam("userId") long userId,
                                                               HttpServletRequest httpServletRequest){
-
-
         return ResponseEntity.ok(conversationService.getCoversationById(conversationId));
     }
     @GetMapping("/user")
     @SecureUserIdResource
-    @CircuitBreaker(name = "messagingServiceCircuitBreaker", fallbackMethod = "fallBackMethod")
-    @RateLimiter(name = "messagingServiceRateLimiter")
+    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
+    @RateLimiter(name = "rateLimiter")
     public ResponseEntity<List<ConversationDTO>> getAllConversationsForUser(@RequestParam("userId") long userId,
                                                                       HttpServletRequest httpServletRequest){
         return ResponseEntity.ok(conversationService.getAllConversationsForUser(userId));
     }
 
     @DeleteMapping()
-    @SecureContentResource
-    @CircuitBreaker(name = "messagingServiceCircuitBreaker", fallbackMethod = "fallBackMethod")
-    @RateLimiter(name = "messagingServiceRateLimiter")
+    @SecureContentResource("conversationId")
+    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
+    @RateLimiter(name = "rateLimiter")
     public ResponseEntity<String> deleteConversation(@RequestParam("conversationId") long conversationId,
                                                      HttpServletRequest httpServletRequest){
 

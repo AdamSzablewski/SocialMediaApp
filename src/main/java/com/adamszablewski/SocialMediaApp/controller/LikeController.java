@@ -2,7 +2,10 @@ package com.adamszablewski.SocialMediaApp.controller;
 
 import com.adamszablewski.SocialMediaApp.annotations.SecureUserIdResource;
 import com.adamszablewski.SocialMediaApp.dtos.UpvoteDto;
+import com.adamszablewski.SocialMediaApp.exceptions.CustomExceptionHandler;
 import com.adamszablewski.SocialMediaApp.service.LikeService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,9 @@ public class LikeController {
     private final LikeService likeService;
 
     @GetMapping("/like")
+    @SecureUserIdResource
+    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
+    @RateLimiter(name = "rateLimiter")
     public ResponseEntity<String> likePost(@RequestParam("postId") long postId,
                                              @RequestParam("userId")long userId,
                                              HttpServletRequest servletRequest){
@@ -31,6 +37,8 @@ public class LikeController {
     }
     @GetMapping("/unlike")
     @SecureUserIdResource
+    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
+    @RateLimiter(name = "rateLimiter")
     public ResponseEntity<String> unLikePost(@RequestParam("postId") long postId,
                                             @RequestParam("userId")long userId,
                                              HttpServletRequest servletRequest){
@@ -39,6 +47,8 @@ public class LikeController {
     }
     @GetMapping("/comments/like")
     @SecureUserIdResource
+    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
+    @RateLimiter(name = "rateLimiter")
     public ResponseEntity<String> likeComment(@RequestParam("commentId") long commentId,
                                                 @RequestParam("userId")long userId,
                                                 HttpServletRequest servletRequest){
@@ -47,6 +57,8 @@ public class LikeController {
     }
     @GetMapping("/comments/unlike")
     @SecureUserIdResource
+    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
+    @RateLimiter(name = "rateLimiter")
     public ResponseEntity<String> unLikeComment(@RequestParam("commentId") long commentId,
                                               @RequestParam("userId")long userId,
                                                 HttpServletRequest servletRequest){
@@ -55,8 +67,14 @@ public class LikeController {
     }
 
     @GetMapping("/comments")
+    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
+    @RateLimiter(name = "rateLimiter")
     public ResponseEntity<List<UpvoteDto>> getLikesForComment(@RequestParam("commentId") long commentId){
         return ResponseEntity.ok(likeService.getLikesForComment(commentId));
+    }
+
+    public  ResponseEntity<?> fallBackMethod(Throwable throwable){
+        return CustomExceptionHandler.handleException(throwable);
     }
 
 }

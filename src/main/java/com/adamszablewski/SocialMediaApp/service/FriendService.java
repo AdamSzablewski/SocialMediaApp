@@ -129,7 +129,13 @@ public class FriendService {
 
 
     public List<FriendRequestDto> getFriendRequestsForUser(long userId) {
-        return Mapper.mapFriendRequestToDto(friendRequestRepository.findByReceiverId(userId));
+//        return Mapper.mapFriendRequestToDto(friendRequestRepository.findByReceiverId(userId));
+        return friendRequestRepository.findAllByReceiverId(userId)
+                .stream()
+                .filter(request -> request.getStatus() == FriendRequestStatus.RECEIVED)
+                .map(Mapper::mapFriendRequestToDto)
+                .toList();
+
     }
 
 

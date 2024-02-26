@@ -1,6 +1,8 @@
 package com.adamszablewski.SocialMediaApp.service;
 
 import com.adamszablewski.SocialMediaApp.dtos.TextPostDto;
+import com.adamszablewski.SocialMediaApp.enteties.multimedia.Image;
+import com.adamszablewski.SocialMediaApp.enteties.multimedia.Video;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Post;
 import com.adamszablewski.SocialMediaApp.enteties.posts.PostType;
 import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
@@ -12,7 +14,6 @@ import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.PostRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.ProfileRepository;
 import com.adamszablewski.SocialMediaApp.s3.S3service;
-import com.adamszablewski.SocialMediaApp.service.multimedia.ImageService;
 import com.adamszablewski.SocialMediaApp.utils.UniqueIdGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
@@ -66,9 +67,8 @@ public class PostService {
     @Transactional
     public String uploadImageForPost(long userId, MultipartFile image) {
         String multimediaId = uniqueIdGenerator.generateUniqueImageId();
-       // imageService.upploadImageToS3(image, multimediaId);
+        imageService.upploadImageToS3(image, multimediaId);
         createHiddenPost(PostType.IMAGE, userId, multimediaId);
-        System.out.println(multimediaId);
         return multimediaId;
     }
     private Profile createProfile(long userId){
@@ -81,19 +81,19 @@ public class PostService {
     public void publishPost(String multimediaId, TextPostDto postDto) {
         Post post = postRepository.findByMultimediaId(multimediaId)
                 .orElseThrow(NoSuchPostException::new);
-        post.setDescription(postDto.getDescription());
+        post.setText(postDto.getDescription());
         post.setCreationTime(LocalDateTime.now());
         post.setVisible(true);
         postRepository.save(post);
     }
-    public String uploadVideoForPost(long userId, MultipartFile video) {
-        String multimediaId = uniqueIdGenerator.generateUniqueVideoId();
-        imageService.upploadVideoToS3(video, multimediaId);
-        createHiddenPost(PostType.VIDEO,userId, multimediaId);
-        return multimediaId;
+    public String uploadVideoForPost(long userId, MultipartFile file) {
+        Video video = imageService.createVideo(userId);
+        imageService.upploadVideoToS3(file, video.getMultimediaId());
+        createHiddenPost(PostType.VIDEO,userId, video.getMultimediaId());
+        return video.getMultimediaId();
 
     }
-    @Async
+
     @Transactional
     public void createHiddenPost(PostType type, long userId, String multimediaID){
 
@@ -111,15 +111,8 @@ public class PostService {
                 postRepository.save(post);
                 profileRepository.save(profile);
             } catch (Exception e){
-                if (type == PostType.VIDEO){
-                  //  kafkaMessagePublisher.sendDeletedVideoMessage(multimediaID);
-                }else {
-                  //  kafkaMessagePublisher.sendDeleteImageMessage(multimediaID);
-                }
-
                 throw new RuntimeException();
             }
-
     }
 
 }
