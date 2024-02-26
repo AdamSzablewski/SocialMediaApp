@@ -5,16 +5,19 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
 
-import static com.adamszablewski.SocialMediaApp.utils.JwtUtil.JWT_SECRET;
 
 
 @Component
+@AllArgsConstructor
 public class TokenGenerator {
+
+    private final JwtUtil jwtUtil;
 
     public JWT  generateToken(Long userId){
         Date currentDate = new Date();
@@ -29,7 +32,7 @@ public class TokenGenerator {
         return new JWT(tokenValue, userId);
     }
     private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(JWT_SECRET);
+        byte[] keyBytes = Decoders.BASE64.decode(jwtUtil.getJWT_SECRET());
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

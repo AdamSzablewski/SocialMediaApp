@@ -7,6 +7,7 @@ import com.adamszablewski.SocialMediaApp.enteties.multimedia.ProfilePhoto;
 import com.adamszablewski.SocialMediaApp.enteties.multimedia.Video;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchUserException;
 import com.adamszablewski.SocialMediaApp.repository.ImageRepositroy;
+import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
 import com.adamszablewski.SocialMediaApp.repository.ProfilePhotoRepository;
 import com.adamszablewski.SocialMediaApp.repository.VideoRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.ProfileRepository;
@@ -30,6 +31,7 @@ public class ImageService {
     private final UniqueIdGenerator uniqueIdGenerator;
     private final ProfileRepository profileRepository;
     private final VideoRepository videoRepository;
+    private final PersonRepository personRepository;
 
     private final ImageRepositroy imageRepositroy;
     private final ProfilePhotoRepository profilePhotoRepository;
@@ -114,7 +116,7 @@ public class ImageService {
         videoRepository.save(video);
         return video;
     }
-
+    @Transactional
     public void updateProfilePhoto(MultipartFile photo, long userId) {
         Image image = createPhotoResource(photo, userId);
         Profile profile = profileRepository.findByUserId(userId)
@@ -127,6 +129,7 @@ public class ImageService {
         }
         profile.setProfilePhoto(image);
         profileRepository.save(profile);
+        System.out.println("saving profile "+ profile);
     }
     public ProfilePhoto createProfilePhoto(long userId){
         ProfilePhoto profilePhoto = ProfilePhoto.builder()

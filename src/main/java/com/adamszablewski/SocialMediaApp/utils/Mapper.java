@@ -89,6 +89,9 @@ public class Mapper {
         return post.getLikes().size();
     }
     public static PersonDto mapPersonToDto(Person person) {
+        if (person.getId()==1l){
+            System.out.println(person);
+        }
         return PersonDto.builder()
                 .id(person.getId())
                 .profile(mapProfileToDto(person.getProfile()))
@@ -96,6 +99,7 @@ public class Mapper {
                 .firstName(person.getFirstName())
                 .lastName(person.getLastName())
                 .birthDate(person.getBirthDate())
+                .profilePhoto(person.getProfile().getProfilePhoto())
                 .joinDate(person.getJoinDate().toLocalDate())
                 .build();
     }
@@ -107,6 +111,7 @@ public class Mapper {
                 .birthDate(person.getBirthDate())
                 .firstName(person.getFirstName())
                 .lastName(person.getLastName())
+                .profilePhoto(person.getProfile().getProfilePhoto())
                 .birthDate(person.getBirthDate())
                 .joinDate(person.getJoinDate().toLocalDate())
                 .build();

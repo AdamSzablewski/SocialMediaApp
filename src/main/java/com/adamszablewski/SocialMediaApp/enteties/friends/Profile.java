@@ -29,7 +29,7 @@ public class Profile {
     private long id;
     @OneToOne
     private Person user;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Image profilePhoto;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();

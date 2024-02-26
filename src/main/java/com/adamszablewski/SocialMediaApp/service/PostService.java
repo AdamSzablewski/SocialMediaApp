@@ -40,20 +40,14 @@ public class PostService {
 
     public void postTextPost(TextPostDto postDto, long userId, boolean isPublic) {
         Post post = createPost(PostType.TEXT, userId, isPublic);
-        fillTextPost(post, postDto);
+        post.setText(postDto.getText());
         postRepository.save(post);
     }
-    public Post fillTextPost(Post post, TextPostDto postDto){
-        if (post.getPostType() != PostType.TEXT){
-            throw new WrongTypeException();
-        }
-        post.setText(postDto.getText());
-        return post;
-    }
+
     public Post createPost(PostType postType,  long userId, boolean isPublic){
         Person user = personRepository.findById(userId)
                 .orElseThrow(NoSuchUserException::new);
-        return Post.builder()
+        Post post = Post.builder()
                 .postType(postType)
                 .person(user)
                 .userId(userId)
@@ -63,6 +57,8 @@ public class PostService {
                 .visible(true)
                 .creationTime(LocalDateTime.now())
                 .build();
+        postRepository.save(post);
+        return post;
     }
     @Transactional
     public String uploadImageForPost(long userId, MultipartFile image) {
@@ -71,13 +67,7 @@ public class PostService {
         createHiddenPost(PostType.IMAGE, userId, multimediaId);
         return multimediaId;
     }
-    private Profile createProfile(long userId){
-        Profile newProfile = Profile.builder()
-                .posts(new ArrayList<>())
-                .build();
-        profileRepository.save(newProfile);
-        return newProfile;
-    }
+    @Transactional
     public void publishPost(String multimediaId, TextPostDto postDto) {
         Post post = postRepository.findByMultimediaId(multimediaId)
                 .orElseThrow(NoSuchPostException::new);

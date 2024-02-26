@@ -23,6 +23,7 @@ public class PersonController {
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "rateLimiter")
     public ResponseEntity<PersonDto> getPersonById(@RequestParam(name = "userId")long userId){
+        System.out.println(personService.getPerson(userId));
         return ResponseEntity.ok(personService.getPerson(userId));
     }
 
