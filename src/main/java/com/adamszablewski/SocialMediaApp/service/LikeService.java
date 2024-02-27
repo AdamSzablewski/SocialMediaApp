@@ -80,8 +80,6 @@ public class LikeService {
             commentRepository.save(comment);
         }
     }
-
-
     public void unLikePost(long postId, long userId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(NoSuchPostException::new);

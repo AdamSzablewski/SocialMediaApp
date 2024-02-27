@@ -129,7 +129,7 @@ public class ImageService {
         }
         profile.setProfilePhoto(image);
         profileRepository.save(profile);
-        System.out.println("saving profile "+ profile);
+
     }
     public ProfilePhoto createProfilePhoto(long userId){
         ProfilePhoto profilePhoto = ProfilePhoto.builder()

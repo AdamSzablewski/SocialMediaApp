@@ -1,15 +1,16 @@
-package com.adamszablewski.SocialMediaApp.service.users;
+package com.adamszablewski.SocialMediaApp.service;
 
 
 import com.adamszablewski.SocialMediaApp.dtos.PersonDto;
+import com.adamszablewski.SocialMediaApp.dtos.RegisterDto;
 import com.adamszablewski.SocialMediaApp.enteties.friends.FriendList;
 import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
 import com.adamszablewski.SocialMediaApp.enteties.Person;
-import com.adamszablewski.SocialMediaApp.exceptions.IncompleteDataException;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchUserException;
 import com.adamszablewski.SocialMediaApp.repository.FriendListRepository;
 import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.ProfileRepository;
+import com.adamszablewski.SocialMediaApp.security.SecurityService;
 import com.adamszablewski.SocialMediaApp.utils.EntityUtils;
 import com.adamszablewski.SocialMediaApp.utils.Mapper;
 import com.adamszablewski.SocialMediaApp.utils.UniqueIdGenerator;
@@ -20,8 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-
-import static com.adamszablewski.SocialMediaApp.enteties.TermsOfUse.ACCEPTED;
 
 @Service
 @AllArgsConstructor
@@ -34,11 +33,13 @@ public class PersonService {
     private final FriendListRepository friendListRepository;
     private final PasswordEncoder passwordEncoder;
     private final Validator validator;
+    private final SecurityService securityService;
 
 
     public PersonDto getPerson(long userId) {
-        return Mapper.mapPersonToDto(personRepository.findById(userId)
-                .orElseThrow(NoSuchUserException::new));
+        Person person = personRepository.findById(userId)
+                .orElseThrow(NoSuchUserException::new);
+        return Mapper.mapPersonToDto(person);
     }
     public PersonDto getPerson(String email) {
         Person user =  personRepository.findByEmail(email)
@@ -50,21 +51,22 @@ public class PersonService {
         personRepository.deleteById(userId);
 
     }
-    public String hashPassword(String password) {
-        return passwordEncoder.encode(password);
-    }
+
+    /**
+     * Creates and saves a Person entity and fills it values from the RegisterDto.
+     * Creates associated Profile and FriendList entity and sets the correct
+     * relationship between the three entities.
+     * @param personData
+     * @Returns void
+     */
     @Transactional
-    public void createUser(Person personData) {
-        boolean valuesValidated = validator.validatePersonValues(personData);
-        if (!valuesValidated){
-            throw new IncompleteDataException();
-        }
-        String hashedPassword = hashPassword(personData.getPassword());
+    public void createUser(RegisterDto personData) {
+
+        String hashedPassword = securityService.hashPassword(personData.getPassword());
         Profile profile = createProfile();
         Person person = createPerson();
         FriendList friendList = createFriendlist();
 
-        person.setBirthDate(personData.getBirthDate());
         person.setFirstName(personData.getFirstName());
         person.setLastName(personData.getLastName());
         person.setPhoneNumber(personData.getPhoneNumber());
@@ -76,43 +78,33 @@ public class PersonService {
         friendList.setUser(person);
         profile.setUser(person);
         profile.setFriendList(friendList);
-
         personRepository.save(person);
         friendListRepository.save(friendList);
         profileRepository.save(profile);
     }
 
-    private Person createPerson(){
+    public Person createPerson(){
         Person person = new Person();
         personRepository.save(person);
         return person;
     }
-    private Profile createProfile(){
+    public Profile createProfile(){
         Profile profile = new Profile();
         profileRepository.save(profile);
         return profile;
     }
-    private FriendList createFriendlist(){
+    public FriendList createFriendlist(){
         FriendList friendList = new FriendList();
         friendListRepository.save(friendList);
         return friendList;
     }
 
-    public long getUserIdForUsername(String email) {
+    public long getUserIdByEmail(String email) {
         Person person = personRepository.findByEmail(email)
                 .orElseThrow(NoSuchUserException::new);
         return person.getId();
     }
-    public String getHashedPassword(String username) {
-        Person person = personRepository.findByEmail(username)
-                .orElseThrow(NoSuchUserException::new);
-        return person.getPassword();
-    }
-    public String getPhoneNumber(long userId) {
-        Person person = personRepository.findById(userId)
-                .orElseThrow(NoSuchUserException::new);
-        return person.getPhoneNumber();
-    }
+
     public void resetPassword(String password, long userId) {
         Person person = personRepository.findById(userId)
                 .orElseThrow(NoSuchUserException::new);

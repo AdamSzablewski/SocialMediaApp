@@ -3,9 +3,9 @@ package com.adamszablewski.SocialMediaApp.controller;
 
 import com.adamszablewski.SocialMediaApp.annotations.SecureUserIdResource;
 import com.adamszablewski.SocialMediaApp.dtos.PersonDto;
-import com.adamszablewski.SocialMediaApp.enteties.Person;
+import com.adamszablewski.SocialMediaApp.dtos.RegisterDto;
 import com.adamszablewski.SocialMediaApp.exceptions.CustomExceptionHandler;
-import com.adamszablewski.SocialMediaApp.service.users.PersonService;
+import com.adamszablewski.SocialMediaApp.service.PersonService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.AllArgsConstructor;
@@ -37,7 +37,7 @@ public class PersonController {
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "rateLimiter")
     public ResponseEntity<Long> getUserIdForUsername(@RequestParam(name = "email")String email){
-        return ResponseEntity.ok(personService.getUserIdForUsername(email));
+        return ResponseEntity.ok(personService.getUserIdByEmail(email));
     }
     @PatchMapping("/reset-password")
     @SecureUserIdResource
@@ -51,8 +51,8 @@ public class PersonController {
     @PostMapping()
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "rateLimiter")
-    public ResponseEntity<String> createUser(@RequestBody Person person){
-        personService.createUser(person);
+    public ResponseEntity<String> createUser(@RequestBody RegisterDto registerDto){
+        personService.createUser(registerDto);
         return ResponseEntity.ok().build();
     }
     @DeleteMapping()

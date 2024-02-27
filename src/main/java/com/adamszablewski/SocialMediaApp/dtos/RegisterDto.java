@@ -2,9 +2,15 @@ package com.adamszablewski.SocialMediaApp.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RegisterDto {
     @NotBlank(message = "First name is required")
     private String firstName;
@@ -15,10 +21,5 @@ public class RegisterDto {
     private String phoneNumber;
     @Size(min = 2 , message = "Password must have 2 characters")
     private String password;
-    @NotBlank(message = "Country is required")
-    private String country;
-    @NotBlank(message = "Region is required")
-    private String region;
-    @NotBlank(message = "City is required")
-    private String city;
+
 }

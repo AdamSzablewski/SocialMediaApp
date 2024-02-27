@@ -1,4 +1,4 @@
-package com.adamszablewski.SocialMediaApp;
+package com.adamszablewski.SocialMediaApp.service;
 
 import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Comment;

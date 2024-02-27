@@ -3,13 +3,11 @@ package com.adamszablewski.SocialMediaApp.enteties;
 import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
 import com.adamszablewski.SocialMediaApp.interfaces.Identifiable;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -36,5 +34,16 @@ public class Person implements Identifiable {
         return this.id;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return id == person.id && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName) && Objects.equals(email, person.email) && Objects.equals(phoneNumber, person.phoneNumber) && Objects.equals(birthDate, person.birthDate) && Objects.equals(password, person.password) && Objects.equals(joinDate, person.joinDate) && Objects.equals(profile, person.profile);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, email, phoneNumber, birthDate, password, joinDate, profile);
+    }
 }

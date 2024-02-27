@@ -52,7 +52,6 @@ public class ConversationService {
      * @param user1Id The ID of the first user.
      * @param user2Id The ID of the second user.
      * @return A ConversationDTO representing the conversation between the two users.
-     * @throws IllegalArgumentException if user1Id or user2Id is invalid (e.g., negative).
      */
     public ConversationDTO getCoversationsBetweenUsers(long user1Id, long user2Id) {
 
@@ -115,7 +114,6 @@ public class ConversationService {
             names.add(sb.toString());
             sb.setLength(0);
         }
-        System.out.println("names "+names);
         return names;
     }
 

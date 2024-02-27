@@ -21,8 +21,13 @@ import static com.adamszablewski.SocialMediaApp.utils.CustomSortingUtil.COMPARE_
 public class FeedService {
     private final static int MAX_FEED_SIZE = 100;
     private final FeedUtil feedUtil;
-    private final Mapper mapper;
-
+    /**
+     * Retrieves a list of PostDto objects for the specified user, including their own posts,
+     * posts from friends, and additional public posts if needed to fill the feed to the maximum size of  {@value MAX_FEED_SIZE} .
+     *
+     * @param userId the ID of the user for whom to retrieve the feed
+     * @return a list of PostDto objects representing the user's feed
+     */
     public List<PostDto> getFeedForUser(long userId) {
         Stream<Post> userPosts = feedUtil.getPostsForUser(userId)
                 .stream();
@@ -52,7 +57,11 @@ public class FeedService {
         return feed;
     }
 
-
+    /**
+     * Retrieves a list of PostDto objects of public posts up to the maximum size of {@value MAX_FEED_SIZE}.
+     *
+     * @return a list of public PostDto objects for the users public feed.
+     */
     public List<PostDto> getPublicFeed() {
         return feedUtil.getPublicPosts()
                 .stream()

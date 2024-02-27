@@ -133,6 +133,7 @@ public class Mapper {
     }
     public static ProfileDto mapProfileToDto(Profile profile){
         return ProfileDto.builder()
+                .id(profile.getId())
                 .profilePhoto(profile.getProfilePhoto())
                 .user(mapPersonToDto(profile.getUser(), true))
                 .friendList(mapFriendListToDto(profile.getFriendList()))
