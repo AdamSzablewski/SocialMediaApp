@@ -30,40 +30,6 @@ public class FriendService {
     private final ProfileRepository profileRepository;
     private final PersonRepository personRepository;
     private final Mapper mapper;
-//    public FriendListDto getFriendsForUser(long userId) {
-//
-//
-//        return mapper.mapFriendlistToDto(friend.getFriendList());
-//    }
-//    public Flux<Long> getFriendIdsForUser(long userId) {
-//        Friend friend = friendRepository.findByUserId(userId)
-//                .orElse(null);
-//        if (friend == null){
-//            return null;
-//        }
-//
-//        return Flux.fromIterable(friend.getFriendList().getFriends().stream().map(Friend::getId).collect(Collectors.toList()));
-//       // return  mapper.convertObjectToUserId(friend.getFriendList().getFriends());
-//    }
-
-//    public void removeFriend(long user1Id, long user2Id) {
-//        Friend user1 = friendRepository.findByUserId(user1Id)
-//                .orElseThrow(NoSuchUserException::new);
-//
-//        Friend user2 = user1.getFriendList().getFriends().stream()
-//                .filter(friend -> friend.getUserId() == user2Id)
-//                .findFirst()
-//                .orElseThrow(NoSuchUserException::new);
-//
-//        user1.getFriendList().getFriends().remove(user2);
-//        user2.getFriendList().getFriends().remove(user1);
-//
-//        friendRepository.save(user1);
-//        friendListRepository.save(user1.getFriendList());
-//        friendRepository.save(user2);
-//        friendListRepository.save(user2.getFriendList());
-//
-//    }
 
     private void addFriend(long user1Id, long user2Id) {
         Person user1 = personRepository.findById(user1Id)
@@ -80,7 +46,12 @@ public class FriendService {
         friendListRepository.save(user2FriendList);
     }
 
-
+    /**
+     * Creates a FriendRequest entity and assigns its sender value
+     * as the Person entity for the sender, and receiver value with
+     * Person entity of the receiver
+     * @throws NoSuchUserException
+     */
     public void sendFriendRequest(long senderId, long friendId) {
         Person sender = personRepository.findById(senderId)
                 .orElseThrow(NoSuchUserException::new);
@@ -95,7 +66,14 @@ public class FriendService {
         friendRequestRepository.save(friendRequest);
     }
 
-    private void acceptFriendRequest(FriendRequest friendRequest) {
+    /**
+     * Adds the profile of user 1 to the second users FriendList entity value of friends
+     * and adds the profile of user 2 to the first users FriendList entity.
+     *
+     * Changes the status of the FriendRequest to ACCEPTED
+     * @param friendRequest
+     */
+    public void acceptFriendRequest(FriendRequest friendRequest) {
         Profile user1 = friendRequest.getReceiver();
         Profile user2 = friendRequest.getSender();
         FriendList user1FriendList = user1.getFriendList();

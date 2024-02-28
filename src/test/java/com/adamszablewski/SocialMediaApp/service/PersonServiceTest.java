@@ -58,20 +58,6 @@ class PersonServiceTest {
 
         verify(personRepository).deleteById(userId);
     }
-//    @Test
-//    void getPersonTest_shouldReturnDto(){
-//        long userId = 1L;
-//        Person person = Person.builder()
-//                .id(userId)
-//                .build();
-//
-//        when(personRepository.findById(userId)).thenReturn(Optional.of(person));
-//
-//        PersonDto result = personService.getPerson(userId);
-//
-//        assertThat(result.getId()).isEqualTo(person.getId());
-//        verify(personRepository).deleteById(userId);
-//    }
 
     @Test
     void createUserTest_shouldCreateUser(){
@@ -153,27 +139,30 @@ class PersonServiceTest {
             personService.getUserIdByEmail(userEmail);
         });
     }
-//    @Test
-//    void resetPasswordTest_ShouldReturnId(){
-//        String userEmail = "test@example.com";
-//        Person person = Person.builder()
-//                .id(1L)
-//                .email(userEmail)
-//                .build();
-//        when(personRepository.findByEmail(userEmail)).thenReturn(Optional.of(person));
-//
-//        long result = personService.getUserIdByEmail(userEmail);
-//
-//        assertThat(result).isEqualTo(person.getId());
-//    }
-//    @Test
-//    void getUserIdForUsernameTest_ShouldThrowNoSuchUserException(){
-//        String userEmail = "test@example.com";
-//        when(personRepository.findByEmail(userEmail)).thenReturn(Optional.empty());
-//
-//        assertThrows(NoSuchUserException.class, ()->{
-//            personService.getUserIdByEmail(userEmail);
-//        });
-//    }
+    @Test
+    void resetPasswordTest_ShouldReturnId(){
+        long userId = 1L;
+        String newPassword = "newPassword";
+        String password = "password";
+        Person person = Person.builder()
+                .id(userId)
+                .password(password)
+                .build();
+        when(personRepository.findById(userId)).thenReturn(Optional.of(person));
+
+        personService.resetPassword(newPassword, userId);
+
+        verify(personRepository).save(any());
+        assertThat(person.getPassword()).isEqualTo(newPassword);
+    }
+    @Test
+    void resetPasswordTest_ThrowsNoSuchUserException(){
+        String userEmail = "test@example.com";
+        when(personRepository.findByEmail(userEmail)).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchUserException.class, ()->{
+            personService.getUserIdByEmail(userEmail);
+        });
+    }
 
 }
