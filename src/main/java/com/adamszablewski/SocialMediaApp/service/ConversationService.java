@@ -2,11 +2,12 @@ package com.adamszablewski.SocialMediaApp.service;
 
 import com.adamszablewski.SocialMediaApp.dtos.ConversationDTO;
 import com.adamszablewski.SocialMediaApp.enteties.Conversation;
+import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchConversationFoundException;
-import com.adamszablewski.SocialMediaApp.exceptions.NoSuchProfileException;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchUserException;
 import com.adamszablewski.SocialMediaApp.repository.ConversationRepository;
+import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.ProfileRepository;
 import com.adamszablewski.SocialMediaApp.utils.Mapper;
 import com.adamszablewski.SocialMediaApp.utils.UserValidator;
@@ -23,31 +24,26 @@ import java.util.*;
 public class ConversationService {
     private final ConversationRepository conversationRepository;
     private final ProfileRepository profileRepository;
-    private final UserValidator userValidator;
-    private final Mapper mapper;
-    private final MessageService messageService;
+    private final PersonRepository personRepository;
 
 
-//    public List<Conversation> getCoversationsForUser(long userId) {
-//        return conversationRepository.findAllByOwnerId(userId);
-//
-//    }
+    public List<ConversationDTO> getConversationsForUser(long userId) {
+        Person user = personRepository.findById(userId)
+                .orElseThrow(NoSuchUserException::new);
+        return user.getProfile().getConversations().stream()
+                .map(Mapper::mapConversationToDTO)
+                .toList();
+    }
 
     public void deleteConversation(long id) {
         conversationRepository.deleteById(id);
     }
 
-//    public void deleteConversationForUser(Long userId) {
-//        List<Conversation> conversations = conversationRepository.findAllByOwnerId(userId);
-//        conversations.forEach(conversation -> {
-//            conversation.getMessages().forEach(
-//                    message -> messageService.deleteMessageFromConversationForUser(conversation, message));
-//        });
-//    }
+
+
     /**
-     * Retrieves a Conversation entity between two users based on their IDs.
-     * If a conversation between the specified users exists, it is retrieved.
-     * If not, a new conversation is created.
+     * Finds a Conversation entity by retrieving a Profile entity for user1 and finding
+     * the associated Conversation held with User2. THe result is mapped to ConversationDTO
      *
      * @param user1Id The ID of the first user.
      * @param user2Id The ID of the second user.
@@ -60,14 +56,12 @@ public class ConversationService {
         Profile profile2 = profileRepository.findByUserId(user2Id)
                 .orElseThrow(NoSuchUserException::new);
 
-        for(Conversation conversation : profile1.getConversations()){
-            if(profile2.getConversations().contains(conversation)){
-                return Mapper.mapConversationToDTO(conversation, Set.of(profile1, profile2), true);
-            }
-        }
+        Conversation conversation = profile1.getConversations().stream()
+                .filter(conv -> conv.getParticipants() !=  null && conv.getParticipants().contains(profile2) && conv.getParticipants().size()==2)
+                .findFirst()
+                .orElseGet(() -> createConversation(profile1, profile2));
 
-        Conversation newConversation = createConversation(profile1, profile2);
-        return Mapper.mapConversationToDTO(newConversation, Set.of(profile1, profile2), true);
+        return Mapper.mapConversationToDTO(conversation, true);
 
     }
     /**
@@ -78,70 +72,27 @@ public class ConversationService {
      *
      */
     @Transactional
-    private Conversation createConversation(Profile profile1, Profile profile2) {
+    public Conversation createConversation(Profile profile1, Profile profile2) {
         Conversation conversation = Conversation.builder()
                 .isSystemConversation(false)
                 .messages(new ArrayList<>())
-                .names(getNamesForProfiles(List.of(profile1, profile2)))
+                .participants(new HashSet<>())
                 .build();
         conversationRepository.save(conversation);
         profile1.getConversations().add(conversation);
         profile2.getConversations().add(conversation);
+        conversation.getParticipants().add(profile1);
+        conversation.getParticipants().add(profile2);
 
         profileRepository.save(profile1);
         profileRepository.save(profile2);
-
+        conversationRepository.save(conversation);
         return conversation;
-    }
-
-    public List<ConversationDTO> getAllConversationsForUser(long userId) {
-        Profile profile = profileRepository.findById(userId)
-                .orElseThrow(NoSuchUserException::new);
-        return profile.getConversations()
-                .stream()
-                .map(Mapper::mapConversationToDTO)
-                .toList();
-    }
-
-    public List<String> getNamesForProfiles(List<Profile> profiles){
-        List<String> names = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
-        for(Profile profile : profiles){
-            sb.append(profile.getUser().getFirstName());
-            sb.append(" ");
-            sb.append(profile.getUser().getLastName());
-            sb.append(" ");
-            names.add(sb.toString());
-            sb.setLength(0);
-        }
-        return names;
     }
 
     public ConversationDTO getCoversationById(long conversationId) {
         return Mapper.mapConversationToDTO(conversationRepository.findById(conversationId)
                 .orElseThrow(NoSuchConversationFoundException::new));
-
     }
-
-
-//    public ResponseEntity<String> createConversation(String user) {
-//        conversationCreator.createConversation(user);
-//        return ResponseEntity.status(HttpStatus.CREATED).build();
-//
-//    }
-//    public Conversation createConversation(String user) {
-//        Optional<Conversation> optionalConversation =  conversationRepository.findByParticipantsContains(user);
-//        if (optionalConversation.isPresent()){
-//            return optionalConversation.get();
-//        }
-//        Conversation conversation = Conversation.builder()
-//                .participants(List.of(user, "support"))
-//                .messages(new ArrayList<>())
-//                .build();
-//        conversationRepository.save(conversation);
-//
-//        return conversation;
-//    }
-
 
 }

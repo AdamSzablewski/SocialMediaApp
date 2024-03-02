@@ -18,8 +18,7 @@ public class ConversationDTO {
 
     private long id;
     private long ownerId;
-    private List<String> participants;
-    private Set<ProfileDto> profiles;
+    private Set<ProfileDto> participants;
     private List<MessageDTO> messages = new ArrayList<>();
 
 }

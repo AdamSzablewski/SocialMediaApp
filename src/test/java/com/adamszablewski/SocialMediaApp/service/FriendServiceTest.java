@@ -1,5 +1,7 @@
 package com.adamszablewski.SocialMediaApp.service;
 
+import com.adamszablewski.SocialMediaApp.dtos.FriendListDto;
+import com.adamszablewski.SocialMediaApp.dtos.FriendRequestDto;
 import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.enteties.friends.FriendList;
 import com.adamszablewski.SocialMediaApp.enteties.friends.FriendRequest;
@@ -23,10 +25,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -143,5 +142,185 @@ class FriendServiceTest {
         assertThat(profile1.getFriendList().getFriends().get(0).getId()).isEqualTo(2L);
         verify(friendRequestRepository).save(eq(newFriendRequest));
     }
+    @Test
+    void declineFriendRequestTest_shouldDecline(){
+        FriendRequest friendRequest = FriendRequest.builder()
+                .status(FriendRequestStatus.RECEIVED)
+                .build();
+
+        friendService.declineFriendRequest(friendRequest);
+
+        assertThat(friendRequest.getStatus()).isEqualTo(FriendRequestStatus.DECLINED);
+        verify(friendRequestRepository).save(friendRequest);
+    }
+
+    @Test
+    void respondToFriendRequestTest_shouldAccept(){
+        FriendRequest friendRequest = FriendRequest.builder()
+                .id(1L)
+                .status(FriendRequestStatus.RECEIVED)
+                .build();
+        boolean status = true;
+
+        when(friendRequestRepository.findById(friendRequest.getId())).thenReturn(Optional.of(friendRequest));
+        FriendService spy = spy(friendService);
+        doNothing().when(spy).acceptFriendRequest(any());
+        spy.respondToFriendRequest(friendRequest.getId(), status);
+
+        verify(spy).acceptFriendRequest(any());
+    }
+    @Test
+    void respondToFriendRequestTest_shouldDecline(){
+        FriendRequest friendRequest = FriendRequest.builder()
+                .id(1L)
+                .status(FriendRequestStatus.RECEIVED)
+                .build();
+        boolean status = false;
+
+        when(friendRequestRepository.findById(friendRequest.getId())).thenReturn(Optional.of(friendRequest));
+        FriendService spy = spy(friendService);
+        doNothing().when(spy).acceptFriendRequest(any());
+        spy.respondToFriendRequest(friendRequest.getId(), status);
+
+        verify(spy).declineFriendRequest(any());
+    }
+    @Test
+    void getFriendRequestsForUser_shouldGet0(){
+        long receiverId = 1L;
+        when(friendRequestRepository.findAllByReceiverId(receiverId)).thenReturn(new ArrayList<>());
+
+        List<FriendRequestDto> result = friendService.getFriendRequestsForUser(receiverId);
+
+        assertThat(result.size()).isEqualTo(0);
+    }
+    @Test
+    void getFriendRequestsForUser_shouldGet1(){
+        long receiverId = 1L;
+        FriendRequest friendRequest = FriendRequest.builder()
+                .id(1L)
+                .status(FriendRequestStatus.RECEIVED)
+                .build();
+        FriendRequest friendRequestDeclined = FriendRequest.builder()
+                .id(1L)
+                .status(FriendRequestStatus.DECLINED)
+                .build();
+        when(friendRequestRepository.findAllByReceiverId(receiverId)).thenReturn(List.of(friendRequest, friendRequestDeclined));
+
+        List<FriendRequestDto> result = friendService.getFriendRequestsForUser(receiverId);
+
+        assertThat(result.size()).isEqualTo(1);
+    }
+    @Test
+    void getFriendRequestsForUser_shouldGet0ForTwoDeclined(){
+        long receiverId = 1L;
+        FriendRequest friendRequest = FriendRequest.builder()
+                .id(1L)
+                .status(FriendRequestStatus.DECLINED)
+                .build();
+        FriendRequest friendRequestDeclined = FriendRequest.builder()
+                .id(1L)
+                .status(FriendRequestStatus.DECLINED)
+                .build();
+        when(friendRequestRepository.findAllByReceiverId(receiverId)).thenReturn(List.of(friendRequest, friendRequestDeclined));
+
+        List<FriendRequestDto> result = friendService.getFriendRequestsForUser(receiverId);
+
+        assertThat(result.size()).isEqualTo(0);
+    }
+    @Test
+    void getFriendRequestsForUser_shouldGet1ForTwoAccepted(){
+        long receiverId = 1L;
+        FriendRequest friendRequest = FriendRequest.builder()
+                .id(1L)
+                .status(FriendRequestStatus.ACCEPTED)
+                .build();
+        FriendRequest friendRequestDeclined = FriendRequest.builder()
+                .id(1L)
+                .status(FriendRequestStatus.ACCEPTED)
+                .build();
+        when(friendRequestRepository.findAllByReceiverId(receiverId)).thenReturn(List.of(friendRequest, friendRequestDeclined));
+
+        List<FriendRequestDto> result = friendService.getFriendRequestsForUser(receiverId);
+
+        assertThat(result.size()).isEqualTo(0);
+    }
+    @Test
+    void getFriendsForUserIdTest_shouldReturnFriendListOf0(){
+
+        FriendList friendList = FriendList.builder()
+                .friends(new ArrayList<>())
+                .build();
+       Profile profile = Profile.builder()
+               .friendList(friendList)
+               .build();
+        Person person = Person.builder()
+                .profile(profile)
+                .id(1L)
+                .build();
+
+        when(personRepository.findById(person.getId())).thenReturn(Optional.of(person));
+
+        FriendListDto friendListDto = friendService.getFriendsForUserId(person.getId());
+
+        assertThat(friendListDto.getFriends().size()).isEqualTo(0);
+    }
+    @Test
+    void getFriendsForUserIdTest_shouldReturnFriendListOf1(){
+        Profile friendProfile = Profile.builder()
+                .build();
+        FriendList friendList = FriendList.builder()
+                .friends(List.of(friendProfile))
+                .build();
+        Profile profile = Profile.builder()
+                .friendList(friendList)
+                .build();
+        Person person = Person.builder()
+                .profile(profile)
+                .id(1L)
+                .build();
+
+        when(personRepository.findById(person.getId())).thenReturn(Optional.of(person));
+
+        FriendListDto friendListDto = friendService.getFriendsForUserId(person.getId());
+
+        assertThat(friendListDto.getFriends().size()).isEqualTo(1);
+
+    }
+
+    @Test
+    void removeFriendTest_shouldRemoveFriend(){
+
+        FriendList friendList1 = FriendList.builder()
+                .friends(new ArrayList<>())
+                .build();
+        FriendList friendList2 = FriendList.builder()
+                .friends(new ArrayList<>())
+                .build();
+        Profile profile1 = Profile.builder()
+                .friendList(friendList1)
+                .build();
+        Profile profile2 = Profile.builder()
+                .friendList(friendList2)
+                .build();
+        Person user1 = Person.builder()
+                .profile(profile1)
+                .id(1L)
+                .build();
+        Person user2 = Person.builder()
+                .profile(profile2)
+                .id(2L)
+                .build();
+        friendList1.getFriends().add(profile2);
+        friendList2.getFriends().add(profile1);
+        when(personRepository.findById(user1.getId())).thenReturn(Optional.of(user1));
+        when(personRepository.findById(user2.getId())).thenReturn(Optional.of(user2));
+
+        friendService.removeFriend(user1.getId(), user2.getId());
+
+        assertThat(user1.getProfile().getFriendList().getFriends().contains(user2.getProfile())).isFalse();
+        assertThat(user2.getProfile().getFriendList().getFriends().contains(user1.getProfile())).isFalse();
+        verify(friendListRepository, times(2)).save(any());
+    }
+
 
 }

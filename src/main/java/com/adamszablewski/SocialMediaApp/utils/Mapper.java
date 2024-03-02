@@ -44,6 +44,9 @@ public class Mapper {
     }
 
     public static PostDto mapPostToDto(Post post){
+        if (post == null){
+            return null;
+        }
         return PostDto.builder()
                 .id(post.getId())
                 .userId(post.getUserId())
@@ -57,7 +60,9 @@ public class Mapper {
                 .build();
     }
     public static CommentDto mapCommentToDto(Comment comment){
-
+        if (comment == null){
+            return null;
+        }
         return CommentDto.builder()
                 .id(comment.getId())
                 .firstName(comment.getUser().getFirstName())
@@ -76,6 +81,9 @@ public class Mapper {
                 .collect(Collectors.toList());
     }
     public static UpvoteDto mapUpvoteDto(Upvote upvote){
+        if (upvote == null){
+            return null;
+        }
         return UpvoteDto.builder()
                 .user(mapPersonToDto(upvote.getUser()))
                 .build();
@@ -89,8 +97,8 @@ public class Mapper {
         return post.getLikes().size();
     }
     public static PersonDto mapPersonToDto(Person person) {
-        if (person.getId()==1l){
-            System.out.println(person);
+        if (person == null){
+            return null;
         }
         return PersonDto.builder()
                 .id(person.getId())
@@ -122,6 +130,7 @@ public class Mapper {
                 .toList();
     }
     public static Set<ProfileDto> mapProfileToDto(Set<Profile> profiles){
+        if (profiles == null) return null;
         return profiles.stream()
                 .map(Mapper::mapProfileToDto)
                 .collect(Collectors.toSet());
@@ -132,6 +141,9 @@ public class Mapper {
                 .toList();
     }
     public static ProfileDto mapProfileToDto(Profile profile){
+        if (profile == null){
+            return null;
+        }
         return ProfileDto.builder()
                 .id(profile.getId())
                 .profilePhoto(profile.getProfilePhoto())
@@ -147,14 +159,13 @@ public class Mapper {
                 .build();
     }
     public static FriendListDto mapFriendListToDto(FriendList friendList){
+        if (friendList == null) return null;
         return FriendListDto.builder()
                 .friends(mapProfileToDto(friendList.getFriends(), true))
                 .build();
     }
     public static List<Long> getFriendIds(FriendList friendList){
-        if(friendList == null){
-            return new ArrayList<>();
-        }
+        if(friendList == null) return null;
         List<Long> friendIds = new ArrayList<>();
         friendList.getFriends().forEach(profile -> {
             if(profile.getUser() != null){
@@ -170,6 +181,9 @@ public class Mapper {
                 .toList();
     }
     public static FriendRequestDto mapFriendRequestToDto(FriendRequest friendRequest){
+        if (friendRequest == null){
+            return null;
+        }
         return FriendRequestDto.builder()
                 .id(friendRequest.getId())
                 .status(friendRequest.getStatus())
@@ -179,6 +193,9 @@ public class Mapper {
     }
 
     public static MessageDTO mapMessageToDTO(Message message){
+        if (message == null){
+            return null;
+        }
         return MessageDTO.builder()
                 .id(message.getId())
                 .sender(mapProfileToDto(message.getSender(), true))
@@ -187,24 +204,30 @@ public class Mapper {
                 .build();
     }
     public static List<MessageDTO> mapMessageToDTO(List<Message> messages){
+        if(messages == null) return null;
         return messages.stream()
                 .map(Mapper::mapMessageToDTO)
                 .toList();
     }
 
     public static ConversationDTO mapConversationToDTO(Conversation conversation){
+        if (conversation == null){
+            return null;
+        }
         return ConversationDTO.builder()
                 .id(conversation.getId())
-                .participants(conversation.getNames())
+                .participants(mapProfileToDto(conversation.getParticipants()))
                 .messages(mapMessageToDTO(conversation.getMessages()))
                 .build();
     }
-    public static ConversationDTO mapConversationToDTO(Conversation conversation, Set<Profile> profiles, boolean limited){
+    public static ConversationDTO mapConversationToDTO(Conversation conversation, boolean limited){
+        if (conversation == null){
+            return null;
+        }
         return ConversationDTO.builder()
                 .id(conversation.getId())
-                .participants(conversation.getNames())
+                .participants(mapProfileToDto(conversation.getParticipants()))
                 .messages(mapMessageToDTO(conversation.getMessages()))
-                .profiles(mapProfileToDto(profiles))
                 .build();
     }
 

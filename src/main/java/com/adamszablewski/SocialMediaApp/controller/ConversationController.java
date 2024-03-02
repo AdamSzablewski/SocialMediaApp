@@ -3,7 +3,6 @@ package com.adamszablewski.SocialMediaApp.controller;
 
 import com.adamszablewski.SocialMediaApp.annotations.SecureContentResource;
 import com.adamszablewski.SocialMediaApp.annotations.SecureResource;
-import com.adamszablewski.SocialMediaApp.annotations.SecureReturnedContentResource;
 import com.adamszablewski.SocialMediaApp.annotations.SecureUserIdResource;
 import com.adamszablewski.SocialMediaApp.dtos.ConversationDTO;
 import com.adamszablewski.SocialMediaApp.exceptions.CustomExceptionHandler;
@@ -51,7 +50,7 @@ public class ConversationController {
     @RateLimiter(name = "rateLimiter")
     public ResponseEntity<List<ConversationDTO>> getAllConversationsForUser(@RequestParam("userId") long userId,
                                                                       HttpServletRequest httpServletRequest){
-        return ResponseEntity.ok(conversationService.getAllConversationsForUser(userId));
+        return ResponseEntity.ok(conversationService.getConversationsForUser(userId));
     }
 
     @DeleteMapping()

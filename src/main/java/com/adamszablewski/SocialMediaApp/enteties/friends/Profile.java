@@ -13,10 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.jmx.export.annotation.ManagedNotification;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @AllArgsConstructor
@@ -36,7 +33,7 @@ public class Profile {
     @OneToOne(cascade = CascadeType.ALL)
     private FriendList friendList;
     @ManyToMany
-    private List<Conversation> conversations;
+    private Set<Conversation> conversations = new HashSet<>();
 
 
     @Override
@@ -46,5 +43,18 @@ public class Profile {
                 ", user=" +
                 ", profilePhoto=" + profilePhoto +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Profile profile = (Profile) o;
+        return id == profile.id && Objects.equals(user, profile.user) && Objects.equals(profilePhoto, profile.profilePhoto) && Objects.equals(posts, profile.posts) && Objects.equals(friendList, profile.friendList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, user, profilePhoto, posts, friendList);
     }
 }

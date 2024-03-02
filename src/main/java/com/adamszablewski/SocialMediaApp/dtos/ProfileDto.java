@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 @AllArgsConstructor
@@ -24,5 +25,6 @@ public class ProfileDto {
     private PersonDto user;
     private List<PostDto> posts = new ArrayList<>();
     private FriendListDto friendList;
+    private Set<ConversationDTO> conversations;
 
 }

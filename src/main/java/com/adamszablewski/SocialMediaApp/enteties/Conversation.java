@@ -9,10 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,7 +25,13 @@ public class Conversation  {
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Message> messages = new ArrayList<>();
     private boolean isSystemConversation;
-    private List<String> names;
+    @ManyToMany
+    @JoinTable(
+            name = "conversation_participants",
+            joinColumns = @JoinColumn(name = "conversation_id"),
+            inverseJoinColumns = @JoinColumn(name = "profile_id")
+    )
+    private Set<Profile> participants = new HashSet<>();
 
 
     @Override
@@ -39,4 +42,16 @@ public class Conversation  {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Conversation that = (Conversation) o;
+        return id == that.id && isSystemConversation == that.isSystemConversation && Objects.equals(messages, that.messages);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, messages, isSystemConversation);
+    }
 }

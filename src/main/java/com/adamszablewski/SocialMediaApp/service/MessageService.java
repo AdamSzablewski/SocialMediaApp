@@ -24,11 +24,6 @@ public class MessageService {
    private final MessageRepository messageRepository;
    private final ConversationRepository conversationRepository;
    private final PersonRepository personRepository;
-//   private final ConversationCreator conversationCreator;
-//   private final UserServiceClient userServiceClient;
-//   private final SecurityServiceClient securityServiceClient;
-   private final UniqueIdGenerator uniqueIdGenerator;
-//   private final ImageServiceClient imageServiceClient;
 
     public void addMessageToConversationFromMessageQueue(MessageDTO message) {
 //        Message newMessage = Message.builder()

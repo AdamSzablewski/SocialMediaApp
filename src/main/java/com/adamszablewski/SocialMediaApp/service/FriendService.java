@@ -14,6 +14,7 @@ import com.adamszablewski.SocialMediaApp.repository.posts.ProfileRepository;
 import com.adamszablewski.SocialMediaApp.utils.Mapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -89,7 +90,7 @@ public class FriendService {
     }
 
 
-    private void declineFriendRequest(FriendRequest friendRequest) {
+    public void declineFriendRequest(FriendRequest friendRequest) {
         friendRequest.setStatus(FriendRequestStatus.DECLINED);
         friendRequestRepository.save(friendRequest);
     }
@@ -107,7 +108,6 @@ public class FriendService {
 
 
     public List<FriendRequestDto> getFriendRequestsForUser(long userId) {
-//        return Mapper.mapFriendRequestToDto(friendRequestRepository.findByReceiverId(userId));
         return friendRequestRepository.findAllByReceiverId(userId)
                 .stream()
                 .filter(request -> request.getStatus() == FriendRequestStatus.RECEIVED)
@@ -122,10 +122,10 @@ public class FriendService {
                 .orElseThrow(NoSuchUserException::new);
         return Mapper.mapFriendListToDto(user.getProfile().getFriendList());
     }
-
-    public void removeFriend(long userId, long friendId) {
-        Person user1 = getPerson(userId);
-        Person user2 = getPerson(friendId);
+    @Transactional
+    public void removeFriend(long user1Id, long user2Id) {
+        Person user1 = getPerson(user1Id);
+        Person user2 = getPerson(user2Id);
         FriendList user1FriendList = user1.getProfile().getFriendList();
         FriendList user2FriendList = user2.getProfile().getFriendList();
         user1FriendList.getFriends().remove(user2.getProfile());
