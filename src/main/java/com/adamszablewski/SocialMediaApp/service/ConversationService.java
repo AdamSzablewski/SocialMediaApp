@@ -94,5 +94,35 @@ public class ConversationService {
         return Mapper.mapConversationToDTO(conversationRepository.findById(conversationId)
                 .orElseThrow(NoSuchConversationFoundException::new));
     }
+    @Transactional
+    public void addUserToExistingConversation(long conversationId, long userId) {
+        Conversation conversation = conversationRepository.findById(conversationId)
+                .orElseThrow(NoSuchConversationFoundException::new);
+        Person person = personRepository.findById(userId)
+                .orElseThrow(NoSuchUserException::new);
+        Profile profile = person.getProfile();
 
+        conversation.getParticipants().add(profile);
+        profile.getConversations().add(conversation);
+
+        conversationRepository.save(conversation);
+        profileRepository.save(profile);
+    }
+    @Transactional
+    public void removeUserFromConversation(long conversationId, long userId) {
+        Conversation conversation = conversationRepository.findById(conversationId)
+                .orElseThrow(NoSuchConversationFoundException::new);
+        Person person = personRepository.findById(userId)
+                .orElseThrow(NoSuchUserException::new);
+        Profile profile = person.getProfile();
+
+        conversation.getParticipants().remove(profile);
+        profile.getConversations().remove(conversation);
+        profileRepository.save(profile);
+
+        if (conversation.getParticipants().isEmpty()){
+            conversationRepository.delete(conversation);
+        }
+        conversationRepository.save(conversation);
+    }
 }

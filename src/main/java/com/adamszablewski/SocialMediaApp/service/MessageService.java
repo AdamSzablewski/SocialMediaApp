@@ -25,22 +25,9 @@ public class MessageService {
    private final ConversationRepository conversationRepository;
    private final PersonRepository personRepository;
 
-    public void addMessageToConversationFromMessageQueue(MessageDTO message) {
-//        Message newMessage = Message.builder()
-//                .message(message.getMessage())
-//                .sender(message.getSender())
-//                .owner(message.getRecipient())
-//                .dateSent(message.getDateSent())
-//                .build();
-//        messageRepository.save(newMessage);
-//
-//        Conversation conversation = conversationRepository.findByOwnerIdAndIsSystemConversation(message.getRecipient(), true)
-//                .orElseGet(() -> conversationCreator.createConversation(message.getRecipient(), true));
-//
-//        conversation.getMessages().add(newMessage);
-//        conversationRepository.save(conversation);
+ public void addMessageToConversation(long userId, long conversationId){
 
-    }
+ }
 
 
 

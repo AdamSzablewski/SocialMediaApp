@@ -169,7 +169,7 @@ class ConversationServiceTest {
         ConversationService spy = spy(conversationService);
 
 
-        when(spy.createConversation(profile1, profile2)).thenReturn(expectedConversation);
+        doReturn(expectedConversation).when(spy).createConversation(profile1, profile2);
 
         ConversationDTO result = spy.getCoversationsBetweenUsers(user1Id, user2Id);
 
@@ -189,7 +189,7 @@ class ConversationServiceTest {
 
         Conversation result = conversationService.createConversation(p1, p2);
 
-        verify(conversationRepository).save(any());
+        verify(conversationRepository,times(2)).save(any());
         assertTrue(result.getParticipants().contains(p1));
         assertTrue(result.getParticipants().contains(p2));
         verify(profileRepository, times(2)).save(any());
@@ -207,6 +207,112 @@ class ConversationServiceTest {
             conversationService.getCoversationById(1L);
         });
     }
+    @Test
+    void addUserToExistingConversationTest_ShouldAddUser(){
+        Person personToAdd = Person.builder()
+                .id(1L)
+                .build();
+        Profile p1 = Profile.builder()
+                .id(1L)
+                .build();
+        Profile p2 = Profile.builder()
+                .id(2L)
+                .build();
+        Profile p3 = Profile.builder()
+                .conversations(new HashSet<>())
+                .id(3L)
+                .build();
+        personToAdd.setProfile(p3);
+        Conversation conversation = Conversation.builder()
+                .id(1L)
+                .participants(new HashSet<>())
+                .build();
+        conversation.getParticipants().add(p1);
+        conversation.getParticipants().add(p2);
 
+        when(conversationRepository.findById(conversation.getId())).thenReturn(Optional.of(conversation));
+        when(personRepository.findById(personToAdd.getId())).thenReturn(Optional.of(personToAdd));
+
+        conversationService.addUserToExistingConversation(conversation.getId(), personToAdd.getId());
+
+        assertTrue(conversation.getParticipants().contains(p3));
+        assertTrue(p3.getConversations().contains(conversation));
+        verify(conversationRepository).save(conversation);
+        verify(profileRepository).save(p3);
+    }
+    @Test
+    void addUserToExistingConversationTest_ShouldThrowNoSuchConversationExc(){
+        long conversationId = 1L;
+        long userId = 1L;
+        when(conversationRepository.findById(conversationId)).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchConversationFoundException.class, ()-> {
+            conversationService.addUserToExistingConversation(conversationId, userId);
+        });
+    }
+    @Test
+    void addUserToExistingConversationTest_ShouldThrowNoSuchUserExc(){
+        long conversationId = 1L;
+        long userId = 1L;
+        when(conversationRepository.findById(conversationId)).thenReturn(Optional.of(new Conversation()));
+        when(personRepository.findById(userId)).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchUserException.class, ()-> {
+            conversationService.addUserToExistingConversation(conversationId, userId);
+        });
+    }
+    @Test
+    void removeUserFromConversationTest_shouldRemoveUser(){
+        Person personToAdd = Person.builder()
+                .id(1L)
+                .build();
+        Profile p1 = Profile.builder()
+                .id(1L)
+                .conversations(new HashSet<>())
+                .build();
+        Profile p2 = Profile.builder()
+                .id(2L)
+                .build();
+        personToAdd.setProfile(p1);
+        Conversation conversation = Conversation.builder()
+                .id(1L)
+                .participants(new HashSet<>())
+                .build();
+        conversation.getParticipants().add(p1);
+        conversation.getParticipants().add(p2);
+
+        when(conversationRepository.findById(conversation.getId())).thenReturn(Optional.of(conversation));
+        when(personRepository.findById(personToAdd.getId())).thenReturn(Optional.of(personToAdd));
+
+        conversationService.removeUserFromConversation(conversation.getId(), personToAdd.getId());
+
+        assertFalse(conversation.getParticipants().contains(p1));
+        assertTrue(conversation.getParticipants().contains(p2));
+        assertFalse(p1.getConversations().contains(conversation));
+        verify(conversationRepository, times(0)).delete(any());
+        verify(conversationRepository).save(conversation);
+        verify(profileRepository).save(p1);
+    }
+    @Test
+    void removeUserFromConversationTest_ShouldThrowNoSuchConvExc(){
+        long conversationId = 1L;
+        long userId = 1L;
+        when(conversationRepository.findById(conversationId)).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchConversationFoundException.class, ()-> {
+            conversationService.removeUserFromConversation(conversationId, userId);
+        });
+    }
+    @Test
+    void removeUserFromConversationTest_ShouldThrowNoSuchUserExc(){
+        long conversationId = 1L;
+        long userId = 1L;
+        when(conversationRepository.findById(conversationId)).thenReturn(Optional.of(new Conversation()));
+        when(personRepository.findById(userId)).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchUserException.class, ()-> {
+            conversationService.removeUserFromConversation(conversationId, userId);
+        });
+    }
 
 }
