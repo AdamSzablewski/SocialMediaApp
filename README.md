@@ -28,4 +28,4 @@ where users can send text, image or video messages.
 - **Messaging Functionality:** Real-time messaging functionality allows users to communicate with each other through text, image or video messages, in 1:1 or even group conversations.
 - **Popularity Meter:** The popularity of posts and comments is determined by the number of likes and comments, affecting their visibility.
 - **User Registration and Authentication:** User registration and authentication with JWT (JSON Web Tokens) for secure user authentication.
-- **Unit Testing with JUnit and Mockito:** Each microservice undergoes extensive unit testing with JUnit and Mockito to ensure functionality and identify and address potential issues.
+- **Unit Testing with JUnit and Mockito:** 
