@@ -5,7 +5,8 @@
 Det här är ett projekt som ske presentera min kompetens inom bland annat Java-utveckling och Spring-ramverket. 
 Projektet är en backend till en SocialMedia app som ger användare möjlighet att dela video, bild eller textinlägg, engagera sig i innehållet genom att kommentera 
 inlägg och andra kommentarer samt gilla innehåll för att påverka dess popularitet. Applikationen tillåter användare att
-kommunicera med andra användare genom den inbyggda meddelandefunktionen.
+kommunicera med andra användare genom den inbyggda meddelandefunktionen, som låter användare starta konversationer med en annan användare eller 
+en gruppkonversation där användare kan skicka både text, bild och video meddelanden.
 
 #### Testa projektet här: [Snart tillgängligt
 
