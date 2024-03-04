@@ -10,7 +10,6 @@ import com.adamszablewski.SocialMediaApp.repository.ConversationRepository;
 import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.ProfileRepository;
 import com.adamszablewski.SocialMediaApp.utils.Mapper;
-import com.adamszablewski.SocialMediaApp.utils.UserValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -124,5 +123,18 @@ public class ConversationService {
             conversationRepository.delete(conversation);
         }
         conversationRepository.save(conversation);
+    }
+
+    /**
+     * Finds the Conversation entity that has the correct conversationId from user conversations.
+     * @param profile
+     * @param conversationId
+     * @return Conversation
+     */
+    public Conversation getConversationByIdFromUser(Profile profile, long conversationId) {
+        return profile.getConversations().stream()
+                .filter(conversation -> conversation.getId() == conversationId)
+                .findFirst()
+                .orElseThrow(NoSuchConversationFoundException::new);
     }
 }

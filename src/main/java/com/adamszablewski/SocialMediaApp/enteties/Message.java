@@ -1,6 +1,8 @@
 package com.adamszablewski.SocialMediaApp.enteties;
 
 import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
+import com.adamszablewski.SocialMediaApp.enteties.multimedia.Image;
+import com.adamszablewski.SocialMediaApp.enteties.multimedia.Video;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,6 +28,10 @@ public class Message {
     private String text;
     @ManyToOne
     private Profile sender;
+    @OneToOne
+    private Image image;
+    @OneToOne
+    private Video video;
     private LocalDateTime dateTime;
 
 

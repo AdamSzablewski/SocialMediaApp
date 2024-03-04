@@ -63,6 +63,13 @@ public class ImageService {
         imageRepositroy.save(photo);
         return photo;
     }
+    public Video createVideoResource(MultipartFile file, long userId) {
+        Video video = createVideo(userId);
+        upploadVideoToS3(file, video.getMultimediaId());
+        video.setMultimediaId(video.getMultimediaId());
+        videoRepository.save(video);
+        return video;
+    }
     public String createPhotoResource(MultipartFile file, long userId, String multimediaId) {
         Image photo = createPhoto(userId, multimediaId);
         upploadImageToS3(file, multimediaId);

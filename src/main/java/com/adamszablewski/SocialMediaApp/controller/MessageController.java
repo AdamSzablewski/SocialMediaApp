@@ -28,54 +28,47 @@ public class MessageController {
     @SecureUserIdResource
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "rateLimiter")
-    public ResponseEntity<MessageDTO> sendMessageToUserById(@RequestParam("conversationId") long conversationId,
+    public ResponseEntity<MessageDTO> sendTextMessageToConversation(@RequestParam("conversationId") long conversationId,
                                                             @RequestParam("userId") long userId,
-                                                            @RequestBody Message message,
+                                                            @RequestBody MessageDTO message,
                                                             HttpServletRequest httpServletRequest){
-        messageService.sendMessageToConversation(conversationId, userId, message);
+        messageService.addTextMessageToConversation(userId, conversationId, message);
         return ResponseEntity.ok().build();
     }
-//    @PostMapping()
-//    @SecureUserIdResource
-//    public ResponseEntity<MessageDTO> sendMessageToConversationById(@PathVariable long recipientId,
-//                                                            @RequestParam("userId") long userId,
-//                                                            @RequestBody Message message,
-//                                                            HttpServletRequest httpServletRequest){
-//        messageService.sendMessageToUserById(recipientId, userId, message);
-//        return ResponseEntity.ok().build();
-//    }
-    @PostMapping("/user/{recipientId}/from/{senderId}/image")
+    @PostMapping("/image")
     @SecureUserIdResource
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "rateLimiter")
-    public ResponseEntity<MessageDTO> sendImageToUserById(@PathVariable long recipientId,
-                                                                           @RequestParam("userId") long userId,
-                                                                           @RequestParam MultipartFile image,
-                                                                           HttpServletRequest httpServletRequest) throws IOException {
-        messageService.sendImageToUserById(recipientId, userId, image);
+    public ResponseEntity<MessageDTO> sendImageToConversation(@RequestParam("userId") long userId,
+                                                              @RequestParam("conversationId")long conversationId,
+                                                              @RequestParam MultipartFile image,
+                                                              HttpServletRequest httpServletRequest) {
+        messageService.addImageMessageToConversation(userId, conversationId, image);
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping("/video")
+    @SecureUserIdResource
+    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
+    @RateLimiter(name = "rateLimiter")
+    public ResponseEntity<MessageDTO> sendVideoToConversation(@RequestParam("userId") long userId,
+                                                              @RequestParam("conversationId")long conversationId,
+                                                              @RequestParam MultipartFile video,
+                                                              HttpServletRequest httpServletRequest) {
+        messageService.addVideoMessageToConversation(userId, conversationId, video);
         return ResponseEntity.ok().build();
     }
     @DeleteMapping("/{conversationId}/message/{messageId}/user/{ownerId}")
     @SecureContentResource
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "rateLimiter")
-    public ResponseEntity<String> deleteMessageFromConversationForUser(@RequestParam("conversationId") long conversationId,
-                                                                       @RequestParam("messageId") long messageId,
-                                                                       @RequestParam("userId") long ownerId,
-                                                                       HttpServletRequest httpServletRequest){
-        messageService.deleteMessageFromConversationForUser(conversationId, messageId);
+    public ResponseEntity<String> deleteMessageFromConversation(@RequestParam("conversationId") long conversationId,
+                                                                @RequestParam("messageId") long messageId,
+                                                                @RequestParam("userId") long userId,
+                                                                HttpServletRequest httpServletRequest){
+        messageService.deleteMessage(conversationId, messageId);
         return ResponseEntity.ok().build();
     }
-    @DeleteMapping("/message/instance")
-    @SecureContentResource
-    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
-    @RateLimiter(name = "rateLimiter")
-    public ResponseEntity<String> deleteMessageFromConversationForAll(@RequestParam("instanceId") String instanceId,
-                                                                                           @RequestParam("userId") long ownerId,
-                                                                                           HttpServletRequest httpServletRequest){
-        messageService.deleteMessageFromConversationForAll(instanceId, ownerId);
-        return ResponseEntity.ok().build();
-    }
+
 
     public  ResponseEntity<?> fallBackMethod(Throwable throwable){
         return CustomExceptionHandler.handleException(throwable);
