@@ -25,6 +25,6 @@ public class ProfileDto {
     private PersonDto user;
     private List<PostDto> posts = new ArrayList<>();
     private FriendListDto friendList;
-    private Set<ConversationDTO> conversations;
+    private List<ConversationDTO> conversations;
 
 }

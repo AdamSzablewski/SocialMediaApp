@@ -3,6 +3,7 @@ package com.adamszablewski.SocialMediaApp.enteties;
 
 import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
 import com.adamszablewski.SocialMediaApp.interfaces.Identifiable;
+import com.adamszablewski.SocialMediaApp.utils.Mapper;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +17,7 @@ import java.util.*;
 @Data
 @Builder
 @Entity
-public class Conversation  {
+public class Conversation implements Identifiable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -31,14 +32,16 @@ public class Conversation  {
             joinColumns = @JoinColumn(name = "conversation_id"),
             inverseJoinColumns = @JoinColumn(name = "profile_id")
     )
-    private Set<Profile> participants = new HashSet<>();
+    private List<Profile> participants = new ArrayList<>();
 
 
     @Override
     public String toString() {
         return "Conversation{" +
                 "id=" + id +
-                ", messageCount=" + (messages != null ? messages.size() : 0) +
+                ", messages=" + Mapper.convertObjectListToIdSet(messages) +
+                ", isSystemConversation=" + isSystemConversation +
+                ", participants=" + participants +
                 '}';
     }
 

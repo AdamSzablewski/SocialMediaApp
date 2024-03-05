@@ -6,6 +6,7 @@ import com.adamszablewski.SocialMediaApp.enteties.friends.FriendList;
 import com.adamszablewski.SocialMediaApp.enteties.multimedia.Image;
 import com.adamszablewski.SocialMediaApp.enteties.multimedia.ProfilePhoto;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Post;
+import com.adamszablewski.SocialMediaApp.utils.Mapper;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,15 +34,18 @@ public class Profile {
     @OneToOne(cascade = CascadeType.ALL)
     private FriendList friendList;
     @ManyToMany
-    private Set<Conversation> conversations = new HashSet<>();
+    private List<Conversation> conversations = new ArrayList<>();
 
 
     @Override
     public String toString() {
         return "Profile{" +
                 "id=" + id +
-                ", user=" +
+                ", user=" + Mapper.mapPersonToDto(user, true) +
                 ", profilePhoto=" + profilePhoto +
+                ", posts=" + Mapper.mapPostToDto(posts) +
+                //", friendList=" + friendList +
+                ", conversations=" + Mapper.mapConversationToDTO(conversations, true) +
                 '}';
     }
 

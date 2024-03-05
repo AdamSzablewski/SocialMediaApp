@@ -25,13 +25,15 @@ public class MessageController {
     MessageService messageService;
 
     @PostMapping()
-    @SecureUserIdResource
-    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
-    @RateLimiter(name = "rateLimiter")
-    public ResponseEntity<MessageDTO> sendTextMessageToConversation(@RequestParam("conversationId") long conversationId,
+    //@SecureUserIdResource
+//    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
+//    @RateLimiter(name = "rateLimiter")
+    public ResponseEntity<MessageDTO> sendTextMessageToConversation(
+                                                            @RequestParam("conversationId") long conversationId,
                                                             @RequestParam("userId") long userId,
                                                             @RequestBody MessageDTO message,
-                                                            HttpServletRequest httpServletRequest){
+                                                            HttpServletRequest httpServletRequest) throws Exception {
+        System.out.println("message calles");
         messageService.addTextMessageToConversation(userId, conversationId, message);
         return ResponseEntity.ok().build();
     }
@@ -57,8 +59,8 @@ public class MessageController {
         messageService.addVideoMessageToConversation(userId, conversationId, video);
         return ResponseEntity.ok().build();
     }
-    @DeleteMapping("/{conversationId}/message/{messageId}/user/{ownerId}")
-    @SecureContentResource
+    @DeleteMapping()
+    //@SecureContentResource
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "rateLimiter")
     public ResponseEntity<String> deleteMessageFromConversation(@RequestParam("conversationId") long conversationId,
@@ -71,6 +73,7 @@ public class MessageController {
 
 
     public  ResponseEntity<?> fallBackMethod(Throwable throwable){
+        throwable.printStackTrace();
         return CustomExceptionHandler.handleException(throwable);
     }
 }

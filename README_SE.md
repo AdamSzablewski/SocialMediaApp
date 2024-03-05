@@ -8,6 +8,7 @@ inlägg och andra kommentarer samt gilla innehåll för att påverka dess popula
 kommunicera med andra användare genom den inbyggda meddelandefunktionen, som låter användare starta konversationer med en annan användare eller 
 en gruppkonversation där användare kan skicka både text, bild och video meddelanden.
 
+Applikationen säkerställer även säker AES-256-kryptering för meddelanden.
 #### Testa projektet här: [Snart tillgängligt
 
 

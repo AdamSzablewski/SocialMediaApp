@@ -58,14 +58,14 @@ class ConversationServiceTest {
     void getConversationsForUser_shouldGet2Conversations(){
         Conversation conversation1 = Conversation.builder()
                 .id(1L)
-                .participants(new HashSet<>())
+                .participants(new ArrayList<>())
                 .build();
         Conversation conversation2 = Conversation.builder()
                 .id(2L)
-                .participants(new HashSet<>())
+                .participants(new ArrayList<>())
                 .build();
         Profile profile = Profile.builder()
-                .conversations(Set.of(conversation1, conversation2))
+                .conversations(List.of(conversation1, conversation2))
                 .build();
         Person user = Person.builder()
                 .id(1L)
@@ -98,19 +98,19 @@ class ConversationServiceTest {
         long user2Id = 2L;
         Conversation conversation1 = Conversation.builder()
                 .id(1L)
-                .participants(new HashSet<>())
+                .participants(new ArrayList<>())
                 .build();
         Conversation conversation2 = Conversation.builder()
                 .id(2L)
-                .participants(new HashSet<>())
+                .participants(new ArrayList<>())
                 .build();
         Profile profile1 = Profile.builder()
                 .id(1)
-                .conversations(Set.of(conversation1, conversation2))
+                .conversations(List.of(conversation1, conversation2))
                 .build();
         Profile profile2 = Profile.builder()
                 .id(2)
-                .conversations(Set.of(conversation1, conversation2))
+                .conversations(List.of(conversation1, conversation2))
                 .build();
 
         ProfileDto profile1Dto = Mapper.mapProfileToDto(profile1);
@@ -155,11 +155,11 @@ class ConversationServiceTest {
 
         Profile profile1 = Profile.builder()
                 .id(1)
-                .conversations(new HashSet<>())
+                .conversations(new ArrayList<>())
                 .build();
         Profile profile2 = Profile.builder()
                 .id(2)
-                .conversations(new HashSet<>())
+                .conversations(new ArrayList<>())
                 .build();
         when(profileRepository.findByUserId(user1Id)).thenReturn(Optional.of(profile1));
         when(profileRepository.findByUserId(user2Id)).thenReturn(Optional.of(profile2));
@@ -180,11 +180,11 @@ class ConversationServiceTest {
     void createConversationTest_shouldCreateConversation(){
         Profile p1 = Profile.builder()
                 .id(1L)
-                .conversations(new HashSet<>())
+                .conversations(new ArrayList<>())
                 .build();
         Profile p2 = Profile.builder()
                 .id(2L)
-                .conversations(new HashSet<>())
+                .conversations(new ArrayList<>())
                 .build();
 
         Conversation result = conversationService.createConversation(p1, p2);
@@ -219,13 +219,13 @@ class ConversationServiceTest {
                 .id(2L)
                 .build();
         Profile p3 = Profile.builder()
-                .conversations(new HashSet<>())
+                .conversations(new ArrayList<>())
                 .id(3L)
                 .build();
         personToAdd.setProfile(p3);
         Conversation conversation = Conversation.builder()
                 .id(1L)
-                .participants(new HashSet<>())
+                .participants(new ArrayList<>())
                 .build();
         conversation.getParticipants().add(p1);
         conversation.getParticipants().add(p2);
@@ -268,7 +268,7 @@ class ConversationServiceTest {
                 .build();
         Profile p1 = Profile.builder()
                 .id(1L)
-                .conversations(new HashSet<>())
+                .conversations(new ArrayList<>())
                 .build();
         Profile p2 = Profile.builder()
                 .id(2L)
@@ -276,7 +276,7 @@ class ConversationServiceTest {
         personToAdd.setProfile(p1);
         Conversation conversation = Conversation.builder()
                 .id(1L)
-                .participants(new HashSet<>())
+                .participants(new ArrayList<>())
                 .build();
         conversation.getParticipants().add(p1);
         conversation.getParticipants().add(p2);

@@ -22,6 +22,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import java.util.Base64;
+
 @AllArgsConstructor
 @Service
 public class SecurityService {

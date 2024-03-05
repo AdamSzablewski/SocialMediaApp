@@ -8,6 +8,8 @@ with content by commenting on posts and other comments, and like content to infl
 users to communicate with other users through the built-in messaging feature allowing for both 1:1 conversations and group conversations
 where users can send text, image or video messages.
 
+The application also ensures secure AES-256 encryption for messages.
+
 #### Try the project here: [Coming soon]
 
 

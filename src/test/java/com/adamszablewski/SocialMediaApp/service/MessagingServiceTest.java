@@ -16,6 +16,7 @@ import com.adamszablewski.SocialMediaApp.repository.ImageRepositroy;
 import com.adamszablewski.SocialMediaApp.repository.MessageRepository;
 import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.ProfileRepository;
+import com.adamszablewski.SocialMediaApp.utils.EncryptionUtil;
 import com.adamszablewski.SocialMediaApp.utils.Mapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,7 +55,7 @@ class MessagingServiceTest {
     }
 
    @Test
-    void addTextMessageToConversationTest_shouldAddTextMessage(){
+    void addTextMessageToConversationTest_shouldAddTextMessage() throws Exception {
         long personId = 1L;
         long conversationId = 1L;
         Profile profile = Profile.builder()
@@ -68,7 +69,7 @@ class MessagingServiceTest {
                 .id(1L)
                 .messages(new ArrayList<>())
                 .isSystemConversation(false)
-                .participants(Set.of(profile))
+                .participants(List.of(profile))
                 .build();
        MessageDTO message = MessageDTO.builder()
                .id(1L)
@@ -110,7 +111,7 @@ class MessagingServiceTest {
                 .id(1L)
                 .messages(new ArrayList<>())
                 .isSystemConversation(false)
-                .participants(Set.of(profile))
+                .participants(List.of(profile))
                 .build();
 
         MultipartFile file = new MockMultipartFile("filename",  new byte[1]);
@@ -155,7 +156,7 @@ class MessagingServiceTest {
                 .id(1L)
                 .messages(new ArrayList<>())
                 .isSystemConversation(false)
-                .participants(Set.of(profile))
+                .participants(List.of(profile))
                 .build();
 
         MultipartFile file = new MockMultipartFile("filename",  new byte[1]);

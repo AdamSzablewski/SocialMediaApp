@@ -24,20 +24,21 @@ import java.util.stream.Collectors;
 public class Mapper {
 
 
-    public <T extends Identifiable> Set<Long> convertObjectListToIdSet(Collection<T> collection){
+    public static <T extends Identifiable> Set<Long> convertObjectListToIdSet(Collection<T> collection){
         return collection.stream()
                 .map(Identifiable::getId)
                 .collect(Collectors.toSet());
     }
-    public <T extends Identifiable> Long convertObjectToId(T entity){
+    public static <T extends Identifiable> Long convertObjectToId(T entity){
         return entity.getId();
     }
-    public <T extends UserResource> Long getUserId(T userResource) {
+    public static <T extends UserResource> Long getUserId(T userResource) {
         return userResource.getUserId();
     }
 
 
     public static  List<PostDto> mapPostToDto(List<Post> posts) {
+        if(posts == null) return null;
         return posts.stream()
                 .map(Mapper::mapPostToDto)
                 .collect(Collectors.toList());
@@ -125,6 +126,7 @@ public class Mapper {
                 .build();
     }
     public static List<ProfileDto> mapProfileToDto(List<Profile> profiles){
+        if (profiles == null) return null;
         return profiles.stream()
                 .map(Mapper::mapProfileToDto)
                 .toList();
@@ -229,6 +231,14 @@ public class Mapper {
                 .participants(mapProfileToDto(conversation.getParticipants()))
                 .messages(mapMessageToDTO(conversation.getMessages()))
                 .build();
+    }
+    public static List<ConversationDTO> mapConversationToDTO(List<Conversation> conversations, boolean limited){
+        if (conversations == null){
+            return null;
+        }
+        return conversations.stream()
+                .map(Mapper::mapConversationToDTO)
+                .toList();
     }
 
 //    public static List<ConversationDTO> mapConversationToDTO(List<Conversation> conversations){

@@ -54,12 +54,10 @@ public class ConversationService {
                 .orElseThrow(NoSuchUserException::new);
         Profile profile2 = profileRepository.findByUserId(user2Id)
                 .orElseThrow(NoSuchUserException::new);
-
         Conversation conversation = profile1.getConversations().stream()
                 .filter(conv -> conv.getParticipants() !=  null && conv.getParticipants().contains(profile2) && conv.getParticipants().size()==2)
                 .findFirst()
                 .orElseGet(() -> createConversation(profile1, profile2));
-
         return Mapper.mapConversationToDTO(conversation, true);
 
     }
@@ -75,17 +73,18 @@ public class ConversationService {
         Conversation conversation = Conversation.builder()
                 .isSystemConversation(false)
                 .messages(new ArrayList<>())
-                .participants(new HashSet<>())
+                .participants(new ArrayList<>())
                 .build();
         conversationRepository.save(conversation);
         profile1.getConversations().add(conversation);
         profile2.getConversations().add(conversation);
+        profileRepository.save(profile1);
+        profileRepository.save(profile2);
         conversation.getParticipants().add(profile1);
         conversation.getParticipants().add(profile2);
 
-        profileRepository.save(profile1);
-        profileRepository.save(profile2);
         conversationRepository.save(conversation);
+
         return conversation;
     }
 

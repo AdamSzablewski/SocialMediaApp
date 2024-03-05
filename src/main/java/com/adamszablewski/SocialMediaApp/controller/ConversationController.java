@@ -27,7 +27,7 @@ public class ConversationController {
     private final ConversationRepository conversationRepository;
 
     @GetMapping()
-    @SecureResource
+    //@SecureResource
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "rateLimiter")
     public ResponseEntity<ConversationDTO> getCoversationBetweenUsers(@RequestParam("user1Id") long user1Id,

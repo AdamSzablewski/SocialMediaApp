@@ -12,6 +12,8 @@ import com.adamszablewski.SocialMediaApp.exceptions.NoSuchUserException;
 import com.adamszablewski.SocialMediaApp.repository.ConversationRepository;
 import com.adamszablewski.SocialMediaApp.repository.MessageRepository;
 import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
+import com.adamszablewski.SocialMediaApp.utils.EncryptionUtil;
+import com.adamszablewski.SocialMediaApp.utils.ExceptionHandler;
 import com.adamszablewski.SocialMediaApp.utils.UniqueIdGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,19 +31,20 @@ public class MessageService {
    private final ConversationRepository conversationRepository;
    private final PersonRepository personRepository;
    private final ImageService imageService;
+   private final EncryptionUtil encryptionUtil;
    @Transactional
-   public Message addTextMessageToConversation(long userId, long conversationId, MessageDTO messageDTO){
+   public Message addTextMessageToConversation(long userId, long conversationId, MessageDTO messageDTO) throws Exception {
         Person person = personRepository.findById(userId)
                 .orElseThrow(NoSuchUserException::new);
         Conversation conversation = conversationService.getConversationByIdFromUser(person.getProfile(), conversationId);
-
         Message message = Message.builder()
-                .text(messageDTO.getMessage())
                 .sender(person.getProfile())
                 .dateTime(LocalDateTime.now())
                 .build();
+        message.setEncryptedMessage(messageDTO.getMessage());
+       System.out.println("message created "+message);
 
-        conversation.getMessages().add(message);
+       conversation.getMessages().add(message);
         messageRepository.save(message);
         conversationRepository.save(conversation);
         return message;
