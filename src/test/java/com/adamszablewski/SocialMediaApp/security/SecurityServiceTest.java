@@ -228,5 +228,5 @@ public class SecurityServiceTest {
             spy.ownsPost(postId, token);
         });
     }
- 
+
 }

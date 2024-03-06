@@ -9,7 +9,7 @@ kommunicera med andra användare genom den inbyggda meddelandefunktionen, som l�
 en gruppkonversation där användare kan skicka både text, bild och video meddelanden.
 
 Applikationen säkerställer även säker AES-256-kryptering för meddelanden.
-#### Testa projektet här: [Snart tillgängligt
+#### Testa projektet här: (Snart tillgängligt)
 
 
 
@@ -22,12 +22,31 @@ Applikationen säkerställer även säker AES-256-kryptering för meddelanden.
 - **PostgreSQL:** Hanterar data, inklusive inlägg, videodata och bildinformation samt användarinformation, med PostgreSQL som databashanterningssystem.
 
 ## Nyckelfunktioner
-- **Inlägg:** Användare kan skapa och dela video, bild eller textbaserade inlägg med sitt nätverk.
-- **Videostreaming:** Videoinlägg kan streamas av användare.
-- **Kommentering och svar:** Användare kan delta i konversationer genom att kommentera inlägg eller svara på andra kommentarer.
-- **Gilla-system:** Applikationen inkluderar ett gilla-system för både inlägg och kommentarer, vilket påverkar innehållets popularitet.
-- **Vänhantering:** Användare kan ansluta sig till andra genom att skicka och acceptera vänförfrågningar, vilket utvidgar deras sociala nätverk.
-- **Meddelandefunktionalitet:** Realtidsmeddelandefunktionalitet gör att användare kan kommunicera med varandra genom text- och bildmeddelanden.
-- **Popularitetsmätare:** Populariteten för inlägg och kommentarer bestäms av antalet gillanden och kommentarer, vilket påverkar deras synlighet.
-- **Användarregistrering och autentisering:** Användarregistrering och autentisering med JWT (JSON Web Tokens) för säker användarautentisering.
-- **Enhetsprovning med JUnit och Mockito:** 
+### Inlägg: 
+- **Typ av inlägg:** Användare kan skapa och dela video, bild eller textbaserade inlägg med sitt nätverk.
+- **Data-servering** Bild och Video inlägg serveras direkt till användaren genom Amazon CloudFront och AWS S3, genom sparad 
+    länk till filen.
+- **Övrig information:** Inlägg kan publiceras som offentliga för allmänheten eller privata som låter enbart användarens vänner att 
+se inlägget.
+
+### Kommentering och svar:
+- **Kommentarer:** Användare kan kommentera inlägg samt svara på andra kommentarer.
+- **Popularitet:** Kommentarer för ett inlägg eller de som är svar till en annan kommentar sorteras i den ordning som visar störst
+ popularitet genom en kombination av gillanden eller svar under kommentaren.
+
+### Gilla-system:
+- **Gillanden** Applikationen inkluderar ett gilla-system för både inlägg och kommentarer, vilket påverkar innehållets popularitet.
+- **Övrigt** Andra användare kan se information om de som gillat ett inlägg eller en kommentar
+
+### Vänhantering:
+- **Vänner** Användare kan ansluta sig till andra genom att skicka och acceptera vänförfrågningar, vilket utvidgar deras sociala nätverk.
+### Meddelandefunktionalitet:
+- **Meddelanden** Applikationen låter användare kommunicera med varandra genom text och bild eller video-meddelanden.
+- **Typ av konversationer** En konversation kan hållas mellan 2 eller flera användare som har startat en gruppkonversation.
+- **Säkerhet** Alla meddelanden är krypterade med AES-256-kryptering. 
+### Användarregistrering och autentisering:
+- **Användarregistrering och autentisering** Alla användare autentiseras med JWT (JSON Web Token).
+- **Säker lagring av Lösenord** Läsenord är har krypterats med en SHA-512 algoritm. 
+### Enhetsprovning med JUnit och Mockito:** 
+- **Enhetsprovning** Över 100 enhetsprovningar ingör i appen för att säkerställa att allt fungerar som det ska.
+
