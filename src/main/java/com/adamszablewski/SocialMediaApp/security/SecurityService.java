@@ -3,15 +3,14 @@ package com.adamszablewski.SocialMediaApp.security;
 
 
 import com.adamszablewski.SocialMediaApp.dtos.LoginDto;
+import com.adamszablewski.SocialMediaApp.enteties.Conversation;
 import com.adamszablewski.SocialMediaApp.enteties.JWT;
 import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Comment;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Post;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Upvote;
-import com.adamszablewski.SocialMediaApp.exceptions.InvalidCredentialsException;
-import com.adamszablewski.SocialMediaApp.exceptions.NoSuchCommentException;
-import com.adamszablewski.SocialMediaApp.exceptions.NoSuchPostException;
-import com.adamszablewski.SocialMediaApp.exceptions.NoSuchUserException;
+import com.adamszablewski.SocialMediaApp.exceptions.*;
+import com.adamszablewski.SocialMediaApp.repository.ConversationRepository;
 import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.CommentRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.LikeRepository;
@@ -38,6 +37,7 @@ public class SecurityService {
     private final LikeRepository likeRepository;
     private final TokenGenerator tokenGenerator;
     private final CommentRepository commentRepository;
+    private final ConversationRepository conversationRepository;
 
     public JWT validateUser(LoginDto loginDto) {
         Person user = getPerson(loginDto);
@@ -104,5 +104,13 @@ public class SecurityService {
 
     public boolean isUser(long userId, String token) {
         return extractUserIdFromToken(token) == userId;
+    }
+
+    public boolean ownsConversation(long conversationId, String token) {
+        long userId = extractUserIdFromToken(token);
+        Conversation conversation = conversationRepository.findById(conversationId)
+                .orElseThrow(NoSuchConversationFoundException::new);
+        return conversation.getParticipants().stream()
+                .anyMatch(participant -> participant.getId() == userId);
     }
 }

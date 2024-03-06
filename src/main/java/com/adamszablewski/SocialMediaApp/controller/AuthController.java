@@ -6,6 +6,8 @@ import com.adamszablewski.SocialMediaApp.dtos.LoginDto;
 import com.adamszablewski.SocialMediaApp.enteties.JWT;
 import com.adamszablewski.SocialMediaApp.security.SecurityService;
 import com.adamszablewski.SocialMediaApp.service.PersonService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,6 +25,8 @@ public class AuthController {
 
     @PatchMapping("/reset-password")
     @SecureUserIdResource
+    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
+    @RateLimiter(name = "rateLimiter")
     public ResponseEntity<String> resetUserPassword(@RequestParam("password") String password,
                                                     @RequestParam("userId") long userId){
         personService.resetPassword(password, userId);
@@ -31,6 +35,8 @@ public class AuthController {
 
 
     @PostMapping("/login")
+    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
+    @RateLimiter(name = "rateLimiter")
     public ResponseEntity<JWT> login(@RequestBody LoginDto user){
 
         securityService.validateUser(user);

@@ -43,14 +43,6 @@ public class Message implements Identifiable {
             throw new RuntimeException(e);
         }
     }
-    public String getDecryptedMessage(){
-        try {
-            return EncryptionUtil.decryptText(this.text);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 
     public String getText(){
         try {

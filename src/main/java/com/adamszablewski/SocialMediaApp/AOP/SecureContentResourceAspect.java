@@ -30,6 +30,7 @@ public class SecureContentResourceAspect {
                 String upvoteId =request.getParameter("upvoteId");
                 String commentId = request.getParameter("commentId");
                 String multimediaId = request.getParameter("multimediaId");
+                String conversationId = request.getParameter("conversationId");
 
                 boolean validated;
 
@@ -53,6 +54,10 @@ public class SecureContentResourceAspect {
                     case "multimediaId" -> {
                         assert commentId != null;
                         validated = securityService.ownsMultimedia(Long.parseLong(multimediaId), token);
+                    }
+                    case "conversationId" -> {
+                        assert conversationId != null;
+                        validated = securityService.ownsConversation(Long.parseLong(conversationId), token);
                     }
                     default -> throw new NotAuthorizedException();
 

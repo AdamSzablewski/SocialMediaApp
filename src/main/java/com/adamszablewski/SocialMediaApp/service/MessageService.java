@@ -12,15 +12,11 @@ import com.adamszablewski.SocialMediaApp.exceptions.NoSuchUserException;
 import com.adamszablewski.SocialMediaApp.repository.ConversationRepository;
 import com.adamszablewski.SocialMediaApp.repository.MessageRepository;
 import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
-import com.adamszablewski.SocialMediaApp.utils.EncryptionUtil;
-import com.adamszablewski.SocialMediaApp.utils.ExceptionHandler;
-import com.adamszablewski.SocialMediaApp.utils.UniqueIdGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -31,7 +27,6 @@ public class MessageService {
    private final ConversationRepository conversationRepository;
    private final PersonRepository personRepository;
    private final ImageService imageService;
-   private final EncryptionUtil encryptionUtil;
    @Transactional
    public Message addTextMessageToConversation(long userId, long conversationId, MessageDTO messageDTO) throws Exception {
         Person person = personRepository.findById(userId)
@@ -42,9 +37,7 @@ public class MessageService {
                 .dateTime(LocalDateTime.now())
                 .build();
         message.setEncryptedMessage(messageDTO.getMessage());
-       System.out.println("message created "+message);
-
-       conversation.getMessages().add(message);
+        conversation.getMessages().add(message);
         messageRepository.save(message);
         conversationRepository.save(conversation);
         return message;
@@ -96,24 +89,4 @@ public class MessageService {
                .findFirst()
                .orElseThrow(NoSuchMessageException::new);
     }
-
-//    @Transactional
-//    public void sendMessageToConversation(long conversationId, long userId, Message messageData) {
-//        Conversation conversation = conversationRepository.findById(conversationId)
-//                .orElseThrow(NoSuchConversationFoundException::new);
-//        Person user = personRepository.findById(userId)
-//                .orElseThrow(NoSuchUserException::new);
-//        Message message = Message.builder()
-//                .text(messageData.getText())
-//                .dateTime(LocalDateTime.now())
-//                .sender(user.getProfile())
-//                .conversation(conversation)
-//                .build();
-//        System.out.println(message);
-//        messageRepository.save(message);
-//        conversation.getMessages().add(message);
-//        conversationRepository.save(conversation);
-//    }
-
-
 }

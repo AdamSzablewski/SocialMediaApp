@@ -25,15 +25,14 @@ public class MessageController {
     MessageService messageService;
 
     @PostMapping()
-    //@SecureUserIdResource
-//    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
-//    @RateLimiter(name = "rateLimiter")
+    @SecureContentResource("conversationId")
+    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
+    @RateLimiter(name = "rateLimiter")
     public ResponseEntity<MessageDTO> sendTextMessageToConversation(
                                                             @RequestParam("conversationId") long conversationId,
                                                             @RequestParam("userId") long userId,
                                                             @RequestBody MessageDTO message,
                                                             HttpServletRequest httpServletRequest) throws Exception {
-        System.out.println("message calles");
         messageService.addTextMessageToConversation(userId, conversationId, message);
         return ResponseEntity.ok().build();
     }
