@@ -4,8 +4,10 @@ import com.adamszablewski.SocialMediaApp.enteties.Otp;
 import com.adamszablewski.SocialMediaApp.exceptions.NotAuthorizedException;
 import com.adamszablewski.SocialMediaApp.repository.OtpRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Component;
 
+import java.rmi.NoSuchObjectException;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -17,9 +19,11 @@ public class OtpManager {
 
     private final OtpRepository otpRepository;
 
-    public boolean validateOTP(long userId, Otp otp){
-        if (userId != otp.getUserId()){
-            throw new NotAuthorizedException("Wrong user");
+    public boolean validateOTP(long userId, String password){
+        Otp otp = otpRepository.findByUserId(userId)
+                .orElseThrow(RuntimeException::new);
+        if(!otp.getOtp().equals(password)){
+            throw new NotAuthorizedException();
         }
         return checkExceedsTime(otp);
     }

@@ -28,12 +28,29 @@ public class AuthController {
     @SecureUserIdResource
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "rateLimiter")
-    public ResponseEntity<String> resetUserPassword(@RequestParam("password") String password,
+    public ResponseEntity<String> resetPassword(@RequestParam("password") String password,
                                                     @RequestParam("userId") long userId){
         personService.resetPassword(password, userId);
         return ResponseEntity.ok().build();
     }
-
+    @GetMapping("/login/otp")
+    @SecureUserIdResource
+    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
+    @RateLimiter(name = "rateLimiter")
+    public ResponseEntity<String> getJWTByOTP(@RequestParam("password") String password,
+                                                @RequestParam("userId") long userId){
+        securityService.getJWTByOTP(password, userId);
+        return ResponseEntity.ok().build();
+    }
+    @GetMapping("/otp")
+    @SecureUserIdResource
+    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
+    @RateLimiter(name = "rateLimiter")
+    public ResponseEntity<String> getOtpForUser(@RequestParam("userId") long userId,
+                                                @RequestParam("email") String email){
+        personService.requestOtp(userId, email);
+        return ResponseEntity.ok().build();
+    }
 
     @PostMapping("/login")
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")

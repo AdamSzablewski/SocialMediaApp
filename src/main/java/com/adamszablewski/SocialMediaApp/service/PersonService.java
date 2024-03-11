@@ -7,14 +7,12 @@ import com.adamszablewski.SocialMediaApp.enteties.friends.FriendList;
 import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
 import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchUserException;
+import com.adamszablewski.SocialMediaApp.exceptions.NotAuthorizedException;
 import com.adamszablewski.SocialMediaApp.repository.FriendListRepository;
 import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.ProfileRepository;
 import com.adamszablewski.SocialMediaApp.security.SecurityService;
-import com.adamszablewski.SocialMediaApp.utils.EntityUtils;
-import com.adamszablewski.SocialMediaApp.utils.Mapper;
-import com.adamszablewski.SocialMediaApp.utils.UniqueIdGenerator;
-import com.adamszablewski.SocialMediaApp.utils.Validator;
+import com.adamszablewski.SocialMediaApp.utils.*;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,6 +31,7 @@ public class PersonService {
     private final FriendListRepository friendListRepository;
     private final PasswordEncoder passwordEncoder;
     private final Validator validator;
+    private final OtpManager otpManager;
     private final SecurityService securityService;
 
 
@@ -111,5 +110,9 @@ public class PersonService {
                 .orElseThrow(NoSuchUserException::new);
         person.setPassword(password);
         personRepository.save(person);
+    }
+
+    public void requestOtp(long userId, String email) {
+        securityService.sendOTP(email, userId);
     }
 }

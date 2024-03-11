@@ -124,24 +124,32 @@ public class SecurityService {
     public void sendOTP(String email, long userId) {
         Person user = personManager.getPerson(email);
         if (user.getId() != userId){
-            throw new NotAuthorizedException("Phone number does not match any account");
+            throw new NotAuthorizedException("Email does not match any account");
         }
         String oneTimePassword = otpManager.generateOTP();
+        otpRepository.findByUserId(userId)
+                .ifPresent(otpRepository::delete);
         Otp otp = Otp.builder()
+                .userId(userId)
                 .otp(oneTimePassword)
                 .dateTime(LocalDateTime.now())
                 .build();
         otpRepository.save(otp);
+        //todo send email
     }
     public JWT validateOTP(String oneTimePassword, long userId){
-        Otp otp = otpRepository.findByOtp(oneTimePassword)
+        Otp otp = otpRepository.findByUserId(userId)
                 .orElseThrow(EntityNotFoundException::new);
-        boolean isValid =  otpManager.validateOTP(userId, otp);
-        if (isValid){
+
+        if (otp.getOtp().equals(oneTimePassword)){
             otpRepository.delete(otp);
             return generateToken(userId);
         }else {
             throw new NotAuthorizedException("validation failed");
         }
+    }
+
+    public JWT getJWTByOTP(String password, long userId) {
+        return validateOTP(password, userId);
     }
 }
