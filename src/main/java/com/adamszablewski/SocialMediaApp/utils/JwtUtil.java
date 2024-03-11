@@ -50,8 +50,12 @@ public class JwtUtil {
     }
 
     public long getUserIdFromToken(String token) {
+        StringBuilder sb = new StringBuilder(token);
+        if (token.startsWith("Bearer ")){
+            sb.delete(0,7);
+        }
         Claims claims = Jwts.parserBuilder()
-                .setSigningKey(getSigningKey()).build().parseClaimsJws(token)
+                .setSigningKey(getSigningKey()).build().parseClaimsJws(sb.toString())
                 .getBody();
         return claims.get("userId", Long.class);
     }

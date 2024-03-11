@@ -36,17 +36,18 @@ public class PersonService {
     private final SecurityService securityService;
 
 
-    public PersonDto getPerson(long userId) {
+    public PersonDto getPersonDto(long userId) {
         Person person = personRepository.findById(userId)
                 .orElseThrow(NoSuchUserException::new);
         return Mapper.mapPersonToDto(person);
     }
-    public PersonDto getPerson(String email) {
+    public PersonDto getPersonDto(String email) {
         Person user =  personRepository.findByEmail(email)
                 .orElseThrow(NoSuchUserException::new);
         return Mapper.mapPersonToDto(user);
 
     }
+
     public void deleteUser(Long userId) {
         personRepository.deleteById(userId);
 

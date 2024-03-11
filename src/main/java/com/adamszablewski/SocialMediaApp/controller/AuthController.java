@@ -4,6 +4,7 @@ package com.adamszablewski.SocialMediaApp.controller;
 import com.adamszablewski.SocialMediaApp.annotations.SecureUserIdResource;
 import com.adamszablewski.SocialMediaApp.dtos.LoginDto;
 import com.adamszablewski.SocialMediaApp.enteties.JWT;
+import com.adamszablewski.SocialMediaApp.exceptions.CustomExceptionHandler;
 import com.adamszablewski.SocialMediaApp.security.SecurityService;
 import com.adamszablewski.SocialMediaApp.service.PersonService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -41,6 +42,9 @@ public class AuthController {
 
         securityService.validateUser(user);
         return ResponseEntity.ok(securityService.generateTokenFromEmail(user.getUsername()));
+    }
+    public  ResponseEntity<?> fallBackMethod(Throwable throwable){
+        return CustomExceptionHandler.handleException(throwable);
     }
 
 }

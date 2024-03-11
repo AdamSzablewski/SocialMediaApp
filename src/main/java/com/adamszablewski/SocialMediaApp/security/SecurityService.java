@@ -5,25 +5,30 @@ package com.adamszablewski.SocialMediaApp.security;
 import com.adamszablewski.SocialMediaApp.dtos.LoginDto;
 import com.adamszablewski.SocialMediaApp.enteties.Conversation;
 import com.adamszablewski.SocialMediaApp.enteties.JWT;
+import com.adamszablewski.SocialMediaApp.enteties.Otp;
 import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Comment;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Post;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Upvote;
 import com.adamszablewski.SocialMediaApp.exceptions.*;
 import com.adamszablewski.SocialMediaApp.repository.ConversationRepository;
+import com.adamszablewski.SocialMediaApp.repository.OtpRepository;
 import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.CommentRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.LikeRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.PostRepository;
+import com.adamszablewski.SocialMediaApp.service.PersonService;
 import com.adamszablewski.SocialMediaApp.utils.JwtUtil;
+import com.adamszablewski.SocialMediaApp.utils.OtpManager;
+import com.adamszablewski.SocialMediaApp.utils.PersonManager;
 import com.adamszablewski.SocialMediaApp.utils.TokenGenerator;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import java.util.Base64;
+import java.time.LocalDateTime;
+
 
 @AllArgsConstructor
 @Service
@@ -38,6 +43,9 @@ public class SecurityService {
     private final TokenGenerator tokenGenerator;
     private final CommentRepository commentRepository;
     private final ConversationRepository conversationRepository;
+    private final OtpRepository otpRepository;
+    private final PersonManager personManager;
+    private final OtpManager otpManager;
 
     public JWT validateUser(LoginDto loginDto) {
         Person user = getPerson(loginDto);
@@ -99,7 +107,7 @@ public class SecurityService {
 
     public boolean ownsMultimedia(long multimediaId, String token) {
         return true;
-        // temp
+        //todo temp
     }
 
     public boolean isUser(long userId, String token) {
@@ -112,5 +120,28 @@ public class SecurityService {
                 .orElseThrow(NoSuchConversationFoundException::new);
         return conversation.getParticipants().stream()
                 .anyMatch(participant -> participant.getId() == userId);
+    }
+    public void sendOTP(String email, long userId) {
+        Person user = personManager.getPerson(email);
+        if (user.getId() != userId){
+            throw new NotAuthorizedException("Phone number does not match any account");
+        }
+        String oneTimePassword = otpManager.generateOTP();
+        Otp otp = Otp.builder()
+                .otp(oneTimePassword)
+                .dateTime(LocalDateTime.now())
+                .build();
+        otpRepository.save(otp);
+    }
+    public JWT validateOTP(String oneTimePassword, long userId){
+        Otp otp = otpRepository.findByOtp(oneTimePassword)
+                .orElseThrow(EntityNotFoundException::new);
+        boolean isValid =  otpManager.validateOTP(userId, otp);
+        if (isValid){
+            otpRepository.delete(otp);
+            return generateToken(userId);
+        }else {
+            throw new NotAuthorizedException("validation failed");
+        }
     }
 }
