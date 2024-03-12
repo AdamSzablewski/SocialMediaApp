@@ -9,6 +9,7 @@ import com.adamszablewski.SocialMediaApp.security.SecurityService;
 import com.adamszablewski.SocialMediaApp.service.PersonService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -29,7 +30,8 @@ public class AuthController {
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "rateLimiter")
     public ResponseEntity<String> resetPassword(@RequestParam("password") String password,
-                                                    @RequestParam("userId") long userId){
+                                                @RequestParam("userId") long userId,
+                                                HttpServletRequest servletRequest){
         personService.resetPassword(password, userId);
         return ResponseEntity.ok().build();
     }
@@ -38,7 +40,8 @@ public class AuthController {
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "rateLimiter")
     public ResponseEntity<String> getJWTByOTP(@RequestParam("password") String password,
-                                                @RequestParam("userId") long userId){
+                                              @RequestParam("userId") long userId,
+                                              HttpServletRequest servletRequest){
         securityService.getJWTByOTP(password, userId);
         return ResponseEntity.ok().build();
     }
@@ -47,7 +50,8 @@ public class AuthController {
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "rateLimiter")
     public ResponseEntity<String> getOtpForUser(@RequestParam("userId") long userId,
-                                                @RequestParam("email") String email){
+                                                @RequestParam("email") String email,
+                                                HttpServletRequest servletRequest){
         personService.requestOtp(userId, email);
         return ResponseEntity.ok().build();
     }

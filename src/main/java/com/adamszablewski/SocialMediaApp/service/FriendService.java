@@ -74,6 +74,7 @@ public class FriendService {
      * Changes the status of the FriendRequest to ACCEPTED
      * @param friendRequest
      */
+    @Transactional
     public void acceptFriendRequest(FriendRequest friendRequest) {
         Profile user1 = friendRequest.getReceiver();
         Profile user2 = friendRequest.getSender();
@@ -81,7 +82,6 @@ public class FriendService {
         FriendList user2FriendList = user2.getFriendList();
         user1FriendList.getFriends().add(user2);
         user2FriendList.getFriends().add(user1);
-
         friendRequest.setStatus(FriendRequestStatus.ACCEPTED);
 
         friendListRepository.save(user1FriendList);

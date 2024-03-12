@@ -8,6 +8,7 @@ import com.adamszablewski.SocialMediaApp.exceptions.CustomExceptionHandler;
 import com.adamszablewski.SocialMediaApp.service.PersonService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -59,7 +60,8 @@ public class PersonController {
     @SecureUserIdResource
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "rateLimiter")
-    public ResponseEntity<String> deleteUser(@RequestParam long userId){
+    public ResponseEntity<String> deleteUser(@RequestParam long userId,
+                                             HttpServletRequest servletRequest){
         personService.deleteUser(userId);
         return ResponseEntity.ok().build();
     }

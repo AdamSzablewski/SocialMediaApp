@@ -9,6 +9,7 @@ import com.adamszablewski.SocialMediaApp.exceptions.CustomExceptionHandler;
 import com.adamszablewski.SocialMediaApp.service.FriendService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,14 +30,16 @@ public class FriendController {
     @SecureUserIdResource
     @CircuitBreaker(name = "friendServiceCircuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "friendServiceRateLimiter")
-    public ResponseEntity<List<FriendRequestDto>> getFriendRequestsForUser(@RequestParam(name = "userId") long userId){
+    public ResponseEntity<List<FriendRequestDto>> getFriendRequestsForUser(@RequestParam(name = "userId") long userId,
+                                                                           HttpServletRequest servletRequest){
         return ResponseEntity.ok(friendService.getFriendRequestsForUser(userId));
     }
     @GetMapping()
     @SecureUserIdResource
     @CircuitBreaker(name = "friendServiceCircuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "friendServiceRateLimiter")
-    public ResponseEntity<FriendListDto> getFriendIdsForUser(@RequestParam(name = "userId") long userId){
+    public ResponseEntity<FriendListDto> getFriendIdsForUser(@RequestParam(name = "userId") long userId,
+                                                             HttpServletRequest servletRequest){
         return ResponseEntity.ok(friendService.getFriendsForUserId(userId));
     }
     @GetMapping("/add")
@@ -44,7 +47,8 @@ public class FriendController {
     @CircuitBreaker(name = "friendServiceCircuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "friendServiceRateLimiter")
     public ResponseEntity<String> sendFriendRequest(@RequestParam(name = "userId") long userId,
-                                                             @RequestParam(name = "friendId") long friendId){
+                                                    @RequestParam(name = "friendId") long friendId,
+                                                    HttpServletRequest servletRequest){
         friendService.sendFriendRequest(userId, friendId);
         return ResponseEntity.ok().build();
     }
@@ -54,7 +58,8 @@ public class FriendController {
     @RateLimiter(name = "friendServiceRateLimiter")
     public ResponseEntity<String> respondToFriendRequest(@RequestParam(name = "friendRequestId") long friendRequestId,
                                                          @RequestParam(name = "status")boolean status,
-                                                         @RequestParam(name="userId") long userId){
+                                                         @RequestParam(name="userId") long userId,
+                                                         HttpServletRequest servletRequest){
         friendService.respondToFriendRequest(friendRequestId, status);
         return ResponseEntity.ok().build() ;
     }
@@ -63,7 +68,8 @@ public class FriendController {
     @CircuitBreaker(name = "friendServiceCircuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "friendServiceRateLimiter")
     public ResponseEntity<String> removeFriend(@RequestParam(name = "userId") long userId,
-                                               @RequestParam(name = "friendId") long friendId){
+                                               @RequestParam(name = "friendId") long friendId,
+                                               HttpServletRequest servletRequest){
         friendService.removeFriend(userId, friendId);
         return ResponseEntity.ok().build();
     }

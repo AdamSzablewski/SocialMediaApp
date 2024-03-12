@@ -8,6 +8,7 @@ import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
 import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchUserException;
 import com.adamszablewski.SocialMediaApp.exceptions.NotAuthorizedException;
+import com.adamszablewski.SocialMediaApp.exceptions.UserAlreadyExistException;
 import com.adamszablewski.SocialMediaApp.repository.FriendListRepository;
 import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.ProfileRepository;
@@ -61,7 +62,9 @@ public class PersonService {
      */
     @Transactional
     public void createUser(RegisterDto personData) {
-
+        if(userExists(personData)){
+            throw new UserAlreadyExistException();
+        }
         String hashedPassword = securityService.hashPassword(personData.getPassword());
         Profile profile = createProfile();
         Person person = createPerson();
@@ -81,6 +84,9 @@ public class PersonService {
         personRepository.save(person);
         friendListRepository.save(friendList);
         profileRepository.save(profile);
+    }
+    public boolean userExists(RegisterDto registerDto){
+        return personRepository.existsByEmail(registerDto.getEmail());
     }
 
     public Person createPerson(){
