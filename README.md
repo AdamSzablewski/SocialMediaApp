@@ -9,6 +9,8 @@ users to communicate with other users through the built-in messaging feature all
 where users can send text, image or video messages.
 The application also ensures secure AES-256 encryption for messages.
 
+In cases such as forgotten password the application will also send a one time password to the users email adress.
+
 #### Try the project here: [Coming soon]
 
 
@@ -39,6 +41,9 @@ The application also ensures secure AES-256 encryption for messages.
 ### Like System:
 - **Likes:** The application includes a like system for both posts and comments, which influences the content's popularity.
 - **Additional:** Other users can see information about those who liked a post or a comment.
+### Email:
+- **Forgotten passwords** In cases such as forgotten password the application will send a one time password to the users email adress.
+
 
 ### Friend Management:
 - **Friends:** Users can connect with others by sending and accepting friend requests, expanding their social network.
