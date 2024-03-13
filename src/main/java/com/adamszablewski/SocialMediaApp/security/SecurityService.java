@@ -3,10 +3,7 @@ package com.adamszablewski.SocialMediaApp.security;
 
 
 import com.adamszablewski.SocialMediaApp.dtos.LoginDto;
-import com.adamszablewski.SocialMediaApp.enteties.Conversation;
-import com.adamszablewski.SocialMediaApp.enteties.JWT;
-import com.adamszablewski.SocialMediaApp.enteties.Otp;
-import com.adamszablewski.SocialMediaApp.enteties.Person;
+import com.adamszablewski.SocialMediaApp.enteties.*;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Comment;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Post;
 import com.adamszablewski.SocialMediaApp.enteties.posts.Upvote;
@@ -17,17 +14,15 @@ import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.CommentRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.LikeRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.PostRepository;
-import com.adamszablewski.SocialMediaApp.service.PersonService;
-import com.adamszablewski.SocialMediaApp.utils.JwtUtil;
-import com.adamszablewski.SocialMediaApp.utils.OtpManager;
-import com.adamszablewski.SocialMediaApp.utils.PersonManager;
-import com.adamszablewski.SocialMediaApp.utils.TokenGenerator;
+import com.adamszablewski.SocialMediaApp.service.EmailSenderService;
+import com.adamszablewski.SocialMediaApp.utils.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 
 @AllArgsConstructor
@@ -46,6 +41,8 @@ public class SecurityService {
     private final OtpRepository otpRepository;
     private final PersonManager personManager;
     private final OtpManager otpManager;
+    private final EmailManager emailManager;
+    private final EmailSenderService emailSenderService;
 
     public JWT validateUser(LoginDto loginDto) {
         Person user = getPerson(loginDto);
@@ -132,10 +129,11 @@ public class SecurityService {
         Otp otp = Otp.builder()
                 .userId(userId)
                 .otp(oneTimePassword)
-                .dateTime(LocalDateTime.now())
+                .createdTime(LocalDateTime.now())
                 .build();
         otpRepository.save(otp);
-        //todo send email
+        Email emailMessage = emailManager.getOTPEmail(otp);
+        CompletableFuture.runAsync(()-> emailSenderService.sendEmail(email, emailMessage));
     }
     public JWT validateOTP(String oneTimePassword, long userId){
         Otp otp = otpRepository.findByUserId(userId)

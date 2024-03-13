@@ -40,15 +40,15 @@ public class PersonController {
     public ResponseEntity<Long> getUserIdForUsername(@RequestParam(name = "email")String email){
         return ResponseEntity.ok(personService.getUserIdByEmail(email));
     }
-    @PatchMapping("/reset-password")
-    @SecureUserIdResource
-    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
-    @RateLimiter(name = "rateLimiter")
-    public ResponseEntity<String> resetUserPassword(@RequestParam("password") String password,
-                                                    @RequestParam("userId") long userId){
-        personService.resetPassword(password, userId);
-        return ResponseEntity.ok().build();
-    }
+//    @PatchMapping("/reset-password")
+//    @SecureUserIdResource
+//    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
+//    @RateLimiter(name = "rateLimiter")
+//    public ResponseEntity<String> resetUserPassword(@RequestParam("password") String password,
+//                                                    @RequestParam("userId") long userId){
+//        personService.resetPassword(password, userId);
+//        return ResponseEntity.ok().build();
+//    }
     @PostMapping()
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "rateLimiter")

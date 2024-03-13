@@ -114,8 +114,9 @@ public class PersonService {
     public void resetPassword(String password, long userId) {
         Person person = personRepository.findById(userId)
                 .orElseThrow(NoSuchUserException::new);
-        person.setPassword(password);
+        person.setPassword(passwordEncoder.encode(password));
         personRepository.save(person);
+
     }
 
     public void requestOtp(long userId, String email) {

@@ -36,17 +36,15 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
     @GetMapping("/login/otp")
-    @SecureUserIdResource
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "rateLimiter")
-    public ResponseEntity<String> getJWTByOTP(@RequestParam("password") String password,
+    public ResponseEntity<JWT> getJWTByOTP(@RequestParam("password") String password,
                                               @RequestParam("userId") long userId,
                                               HttpServletRequest servletRequest){
-        securityService.getJWTByOTP(password, userId);
-        return ResponseEntity.ok().build();
+
+        return ResponseEntity.ok( securityService.getJWTByOTP(password, userId));
     }
     @GetMapping("/otp")
-    @SecureUserIdResource
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "rateLimiter")
     public ResponseEntity<String> getOtpForUser(@RequestParam("userId") long userId,

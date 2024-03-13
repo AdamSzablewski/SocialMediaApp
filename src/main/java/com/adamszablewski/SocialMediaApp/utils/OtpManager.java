@@ -4,10 +4,8 @@ import com.adamszablewski.SocialMediaApp.enteties.Otp;
 import com.adamszablewski.SocialMediaApp.exceptions.NotAuthorizedException;
 import com.adamszablewski.SocialMediaApp.repository.OtpRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Component;
 
-import java.rmi.NoSuchObjectException;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -29,7 +27,7 @@ public class OtpManager {
     }
     public boolean checkExceedsTime(Otp otp){
         LocalDateTime currentTime = LocalDateTime.now();
-        LocalDateTime previousTime = otp.getDateTime();
+        LocalDateTime previousTime = otp.getCreatedTime();
         long minutesDifference = ChronoUnit.MINUTES.between(currentTime, previousTime);
         if (minutesDifference > Otp.OTP_TIME_MAX){
             otpRepository.delete(otp);

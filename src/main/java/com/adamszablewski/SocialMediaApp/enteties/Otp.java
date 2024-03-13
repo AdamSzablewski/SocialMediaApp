@@ -22,5 +22,5 @@ public class Otp {
     @Column(unique = true)
     private long userId;
     private String otp;
-    private LocalDateTime dateTime;
+    private LocalDateTime createdTime;
 }
