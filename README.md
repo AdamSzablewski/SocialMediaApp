@@ -10,7 +10,7 @@ where users can send text, image or video messages.
 The application also ensures secure AES-256 encryption for messages.
 
 In cases such as forgotten password the application will also send a one time password to the users email adress.
-
+In this project I used concepts such as asynchronous programming, aspect oriented programming and object oriented programming.
 #### Try the project here: [Coming soon]
 
 
@@ -28,7 +28,7 @@ In cases such as forgotten password the application will also send a one time pa
 - **Post Types:** Users can create and share video, image, or text-based posts.
 - **Data Serving:** Image and Video posts are served directly to the user through Amazon CloudFront and AWS S3, via a stored link to the file.
 - **Additional Information:** Posts can be published as public for everyone or private, allowing only the user's friends to see the post.
-
+- Users can view view count of posts and who liked or commented on the post.
 ### Messaging Functionality:
 - **Messages:** The application allows users to communicate with each other through text and image or video messages.
 - **Types of Conversations:** A conversation can be held between 2 or more users who have started a group conversation.

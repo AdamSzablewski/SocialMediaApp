@@ -24,13 +24,13 @@ UPDATE person SET profile_id = 5 WHERE id = 5;
 
 
 -- Sample text posts
-INSERT INTO post (user_id,person_id, is_public, post_type, creation_time, text, visible, multimedia_id)
+INSERT INTO post (user_id,person_id, is_public, post_type, creation_time, text, visible, multimedia_id, view_count)
 VALUES
-(1,1, true, 1, '2023-01-01 10:00:00', 'This is my first post!', true, NULL),
-(2,2, true, 1, '2023-01-02 11:00:00', 'Just sharing my thoughts.', true, NULL),
-(3,3, true, 1, '2023-01-03 12:00:00', 'Hello world!', true, NULL),
-(4,4, true, 1, '2023-01-04 13:00:00', 'Feeling excited today!', true, NULL),
-(5,5, true, 1, '2023-01-05 14:00:00', 'Enjoying the sunny weather.', true, NULL);
+(1,1, true, 1, '2023-01-01 10:00:00', 'This is my first post!', true, NULL, 0),
+(2,2, true, 1, '2023-01-02 11:00:00', 'Just sharing my thoughts.', true, NULL, 0),
+(3,3, true, 1, '2023-01-03 12:00:00', 'Hello world!', true, NULL, 0),
+(4,4, true, 1, '2023-01-04 13:00:00', 'Feeling excited today!', true, NULL, 0),
+(5,5, true, 1, '2023-01-05 14:00:00', 'Enjoying the sunny weather.', true, NULL, 0);
 
 
 INSERT INTO comment (text, user_id, date_time)

@@ -58,6 +58,7 @@ public class Mapper {
                 .text(post.getText())
                 .multimediaId(post.getMultimediaId())
                 .description(post.getDescription())
+                .viewCount(post.getViewCount())
                 .build();
     }
     public static CommentDto mapCommentToDto(Comment comment){

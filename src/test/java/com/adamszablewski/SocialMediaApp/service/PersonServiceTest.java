@@ -17,6 +17,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,6 +43,8 @@ class PersonServiceTest {
 
     @Mock
     private PersonRepository personRepository;
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private PersonService personService;
@@ -149,7 +153,7 @@ class PersonServiceTest {
                 .password(password)
                 .build();
         when(personRepository.findById(userId)).thenReturn(Optional.of(person));
-
+        when(passwordEncoder.encode(any())).thenReturn(newPassword);
         personService.resetPassword(newPassword, userId);
 
         verify(personRepository).save(any());

@@ -23,4 +23,5 @@ public class PostDto {
     private List<CommentDto> comments;
     private Set<UpvoteDto> userLikeIds;
     private String description;
+    private long viewCount;
 }

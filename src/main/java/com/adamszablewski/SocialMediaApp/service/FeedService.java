@@ -40,8 +40,9 @@ public class FeedService {
                 .sorted(COMPARE_DAY_LIKE_COMMENT)
                 .filter(post -> postIds.add(post.getId()))
                 .filter(Post::isVisible)
-                .map(Mapper::mapPostToDto)
                 .limit(MAX_FEED_SIZE)
+                .map(feedUtil::addViewToPost)
+                .map(Mapper::mapPostToDto)
                 .collect(Collectors.toList());
 
         int spotsLeft = MAX_FEED_SIZE - feed.size();
@@ -66,9 +67,9 @@ public class FeedService {
         return feedUtil.getPublicPosts()
                 .stream()
                 .filter(Post::isVisible)
-                .map(Mapper::mapPostToDto)
                 .limit(MAX_FEED_SIZE)
+                .map(feedUtil::addViewToPost)
+                .map(Mapper::mapPostToDto)
                 .toList();
-
     }
 }

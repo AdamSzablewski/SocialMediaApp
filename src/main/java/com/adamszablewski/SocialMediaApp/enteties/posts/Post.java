@@ -36,6 +36,7 @@ public class Post implements Commentable, Likeable {
     private String description;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
+    private long viewCount = 0;
     @Override
     public String toString() {
         return "Post{" +

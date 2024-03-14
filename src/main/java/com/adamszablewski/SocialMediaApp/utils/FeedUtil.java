@@ -29,4 +29,9 @@ public class FeedUtil {
     public List<Post> getPublicPosts() {
         return postRepository.findAllPublicAndVisiblePosts();
     }
+
+    public Post addViewToPost(Post post) {
+        postRepository.incrementViewCount(post.getId());
+        return post;
+    }
 }

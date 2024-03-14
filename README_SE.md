@@ -9,6 +9,8 @@ kommunicera med andra användare genom den inbyggda meddelandefunktionen, som l�
 en gruppkonversation där användare kan skicka både text, bild och video meddelanden. Applikationen säkerställer även säker AES-256-kryptering för meddelanden.
 
 Vid bortglömt lösenord kan användare även generera ett engångslösenord som skickas till användaren via email.
+
+I det här projektet har jag använt sådana koncept som OOP, AOP, functional programming och asynchronous programming.
 #### Testa projektet här: (Snart tillgängligt)
 
 
@@ -28,6 +30,7 @@ Vid bortglömt lösenord kan användare även generera ett engångslösenord som
     länk till filen.
 - **Övrig information:** Inlägg kan publiceras som offentliga för allmänheten eller privata som låter enbart användarens vänner att 
 se inlägget.
+- Användare kan se antal vsiningar av inlägget, gillanden och kommentarer samt vem som har gillat-kommenterat inlägget.
 
 ### Kommentering och svar:
 - **Kommentarer:** Användare kan kommentera inlägg samt svara på andra kommentarer.
