@@ -7,7 +7,6 @@ Projektet är en backend till en SocialMedia app som ger användare möjlighet a
 inlägg och andra kommentarer samt gilla innehåll för att påverka dess popularitet. Applikationen tillåter användare att
 kommunicera med andra användare genom den inbyggda meddelandefunktionen, som låter användare starta konversationer med en annan användare eller 
 en gruppkonversation där användare kan skicka både text, bild och video meddelanden. Applikationen säkerställer även säker AES-256-kryptering för meddelanden.
-
 Vid bortglömt lösenord kan användare även generera ett engångslösenord som skickas till användaren via email.
 
 I det här projektet har jag använt sådana koncept som OOP, AOP, functional programming och asynchronous programming.

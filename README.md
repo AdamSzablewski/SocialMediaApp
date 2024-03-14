@@ -7,9 +7,8 @@ The project serves as a backend for a Social Media app that allows users to shar
 with content by commenting on posts and other comments, and like content to influence its popularity. The application enables 
 users to communicate with other users through the built-in messaging feature allowing for both 1:1 conversations and group conversations
 where users can send text, image or video messages.
-The application also ensures secure AES-256 encryption for messages.
+The application also ensures secure AES-256 encryption for messages. In cases such as forgotten password the application will also send a one time password to the users email adress.
 
-In cases such as forgotten password the application will also send a one time password to the users email adress.
 In this project I used concepts such as asynchronous programming, aspect oriented programming and object oriented programming.
 #### Try the project here: [Coming soon]
 
