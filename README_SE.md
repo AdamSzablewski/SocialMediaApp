@@ -20,7 +20,7 @@ I det här projektet har jag använt sådana koncept som OOP, AOP, functional pr
 - **Spring-framework**
 - **AOP (Aspektinriktad programmering):** Använder en kombination av aspektinriktad programmering och anpassade annoteringar för att implementera säkerhet på metodnivå, vilket ger stor flexibilitet och enkelhet vid implementering av auktorisation för att begränsad tillstånd där det behövs.
 - **JUnit och Mockito:** Använder JUnit och Mockito för grundlig enhetstestning för att säkerställa mikrotjänsternas pålitlighet.
-- **PostgreSQL:** Hanterar data, inklusive inlägg, videodata och bildinformation samt användarinformation, med PostgreSQL som databashanterningssystem.
+- **MySQL:** Hanterar data, inklusive inlägg, videodata och bildinformation samt användarinformation.
 
 ## Nyckelfunktioner
 ### Inlägg: 

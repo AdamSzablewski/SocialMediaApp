@@ -18,7 +18,7 @@ In this project I used concepts such as asynchronous programming, aspect oriente
 - **AWS S3 and CloudFront:** For storage and streaming of videos and images.
 - **Spring Framework**
 - **AOP (Aspect-Oriented Programming):** Utilizes a combination of aspect-oriented programming and custom annotations to implement method-level security, providing great flexibility and simplicity in implementing authorization to restrict access where needed.
-- **JUnit and Mockito:** Uses JUnit and Mockito for thorough unit testing to ensure the reliability of microservices.
+- **JUnit and Mockito:** Uses JUnit and Mockito for thorough unit testing.
 - **MySQL:** Manages data, including posts, video data, image information, and user information.
 
 
