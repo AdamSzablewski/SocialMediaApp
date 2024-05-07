@@ -1,10 +1,5 @@
 package com.adamszablewski.SocialMediaApp.dtos;
 
-import com.adamszablewski.SocialMediaApp.enteties.Conversation;
-import com.adamszablewski.SocialMediaApp.enteties.Message;
-import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,9 +14,8 @@ import java.util.Set;
 @Builder
 public class MessageDTO {
     private long id;
-    private Set<Long> recievers;
+    private Set<Long> receivers;
     private ProfileDto sender;
     private LocalDateTime dateTime;
     private String message;
-
 }
