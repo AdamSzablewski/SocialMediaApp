@@ -10,16 +10,16 @@ where users can send text, image or video messages.
 The application also ensures secure AES-256 encryption for messages. In cases such as forgotten password the application will also send a one time password to the users email adress.
 
 In this project I used concepts such as asynchronous programming, aspect oriented programming and object oriented programming.
-#### Try the project here: [Coming soon]
+
 
 
 ## Technologies Used
 - **Java:** The primary programming language.
 - **AWS S3 and CloudFront:** For storage and streaming of videos and images.
-- **Spring Framework**
+- **Spring Boot**
 - **AOP (Aspect-Oriented Programming):** Utilizes a combination of aspect-oriented programming and custom annotations to implement method-level security, providing great flexibility and simplicity in implementing authorization to restrict access where needed.
 - **JUnit and Mockito:** Uses JUnit and Mockito for thorough unit testing.
-- **MySQL:** Manages data, including posts, video data, image information, and user information.
+- **MySQL:** 
 
 
 ## Key Features
