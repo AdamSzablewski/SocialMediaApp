@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -121,5 +123,18 @@ public class PersonService {
 
     public void requestOtp(long userId, String email) {
         securityService.sendOTP(email, userId);
+    }
+
+    public List<PersonDto> searchForUsers(String searchText) {
+        String[] names = searchText.split(" ");
+        if(names.length <= 1) {
+            return new ArrayList<>();
+        }
+        String firstName = names[0].trim();
+        String lastName = names[1].trim();
+        List<Person> users = personRepository.getUsersThatMatch(firstName, lastName);
+        return users.stream()
+                .map(Mapper::mapPersonToDto)
+                .toList();
     }
 }

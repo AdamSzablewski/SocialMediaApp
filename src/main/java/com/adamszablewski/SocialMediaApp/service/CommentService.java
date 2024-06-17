@@ -82,7 +82,7 @@ public class CommentService {
         parent.getAnswers().add(comment);
         commentRepository.save(comment);
         commentRepository.save(parent);
-        System.out.println("created comment "+comment);
+
     }
 
     public List<CommentDto> getCommentsForPost(long postId) {

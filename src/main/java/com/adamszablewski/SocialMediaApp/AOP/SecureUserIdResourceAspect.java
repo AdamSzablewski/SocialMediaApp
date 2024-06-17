@@ -39,8 +39,7 @@ public class SecureUserIdResourceAspect {
                 if (!validated){
                     throw new NotAuthorizedException();
                 }
-                System.out.println(validated);
-                System.out.println(userId);
+
             }
         }
     }

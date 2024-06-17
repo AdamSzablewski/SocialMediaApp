@@ -14,17 +14,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @AllArgsConstructor
 @RequestMapping("/user")
 public class PersonController {
     private final PersonService personService;
 
+    @GetMapping("/{searchText}")
+    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
+    @RateLimiter(name = "rateLimiter")
+    public ResponseEntity<List<PersonDto>> searchForUsers(@PathVariable String searchText){
+        return ResponseEntity.ok(personService.searchForUsers(searchText));
+    }
+
     @GetMapping()
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "rateLimiter")
     public ResponseEntity<PersonDto> getPersonById(@RequestParam(name = "userId")long userId){
-        System.out.println(personService.getPersonDto(userId));
         return ResponseEntity.ok(personService.getPersonDto(userId));
     }
 
@@ -40,15 +48,6 @@ public class PersonController {
     public ResponseEntity<Long> getUserIdForUsername(@RequestParam(name = "email")String email){
         return ResponseEntity.ok(personService.getUserIdByEmail(email));
     }
-//    @PatchMapping("/reset-password")
-//    @SecureUserIdResource
-//    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
-//    @RateLimiter(name = "rateLimiter")
-//    public ResponseEntity<String> resetUserPassword(@RequestParam("password") String password,
-//                                                    @RequestParam("userId") long userId){
-//        personService.resetPassword(password, userId);
-//        return ResponseEntity.ok().build();
-//    }
     @PostMapping()
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
     @RateLimiter(name = "rateLimiter")
