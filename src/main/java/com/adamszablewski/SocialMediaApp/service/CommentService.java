@@ -76,10 +76,13 @@ public class CommentService {
                 .dateTime(LocalDateTime.now())
                 .build();
 
-        if (comment.getAnswers() == null){
+        if (parent.getAnswers() == null){
             parent.setAnswers(new ArrayList<>());
+
         }
+
         parent.getAnswers().add(comment);
+
         commentRepository.save(comment);
         commentRepository.save(parent);
 
@@ -96,6 +99,7 @@ public class CommentService {
 
     public List<CommentDto> getCommentsForResource(long resourceId, boolean isComment) {
         if(isComment){
+            //System.out.println(commentRepository.findById(resourceId));
             return commentRepository.findById(resourceId)
                     .orElseThrow(NoSuchCommentException::new)
                     .getComments()
