@@ -19,7 +19,7 @@ public class SecureUserIdResourceAspect {
 
     private final SecurityService securityService;
 
-    @Before("@annotation(com.adamszablewski.SocialMediaApp.annotations.SecureUserIdResource)")
+//    @Before("@annotation(com.adamszablewski.SocialMediaApp.annotations.SecureUserIdResource)")
     public void processSecureuserIdResource(JoinPoint joinPoint) {
 
         Object[] args = joinPoint.getArgs();

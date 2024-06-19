@@ -19,7 +19,7 @@ public class SecureContentResourceAspect {
 
     private final SecurityService securityService;
 
-    @Before("@annotation(secureContentResource) && args(.., request)")
+//    @Before("@annotation(secureContentResource) && args(.., request)")
     public void processSecureContentResource(JoinPoint joinPoint, SecureContentResource secureContentResource, HttpServletRequest request) {
 
         Object[] args = joinPoint.getArgs();

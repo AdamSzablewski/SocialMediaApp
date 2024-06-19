@@ -7,7 +7,6 @@ import com.adamszablewski.SocialMediaApp.enteties.friends.FriendList;
 import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
 import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchUserException;
-import com.adamszablewski.SocialMediaApp.exceptions.NotAuthorizedException;
 import com.adamszablewski.SocialMediaApp.exceptions.UserAlreadyExistException;
 import com.adamszablewski.SocialMediaApp.repository.FriendListRepository;
 import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
@@ -127,14 +126,23 @@ public class PersonService {
 
     public List<PersonDto> searchForUsers(String searchText) {
         String[] names = searchText.split(" ");
-        if(names.length <= 1) {
-            return new ArrayList<>();
+        List<Person> users = new ArrayList<>();
+        if(names.length == 1) {
+            users =  searchWithOneWord(searchText);
+        }else {
+            String firstName = names[0].trim();
+            String lastName = names[1].trim();
+            users = personRepository.getUsersThatMatch(firstName, lastName);
         }
-        String firstName = names[0].trim();
-        String lastName = names[1].trim();
-        List<Person> users = personRepository.getUsersThatMatch(firstName, lastName);
         return users.stream()
                 .map(Mapper::mapPersonToDto)
                 .toList();
+    }
+    public List<Person> searchWithOneWord(String searchText){
+        List<Person> usersByFirstName = personRepository.getUsersByFirstName(searchText);
+        if(usersByFirstName.size() == 0){
+            return personRepository.getUsersByLastName(searchText);
+        }
+        return usersByFirstName;
     }
 }

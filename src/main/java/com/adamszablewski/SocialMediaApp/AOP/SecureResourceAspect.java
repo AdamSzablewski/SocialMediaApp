@@ -20,7 +20,7 @@ public class SecureResourceAspect {
 
     private final SecurityService securityService;
 
-    @Before("@annotation(com.adamszablewski.SocialMediaApp.annotations.SecureResource)")
+//    @Before("@annotation(com.adamszablewski.SocialMediaApp.annotations.SecureResource)")
     public void processSecureResource(JoinPoint joinPoint) {
 
         Object[] args = joinPoint.getArgs();
