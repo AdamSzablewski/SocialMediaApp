@@ -31,7 +31,7 @@ Users can search for other users by entering a first name, last name, or both.
 
 [Click here to see the video](https://youtu.be/LnN93dLWGuQ)
 
-### Posts:
+## Posts:
 - **Post Types:** Users can create and share video, image, or text-based posts.
 - **Data Serving:** Image and Video posts are served directly to the user through Amazon CloudFront and AWS S3, via a stored link to the file.
 - **Additional Information:** Posts can be published as public for everyone or private, allowing only the user's friends to see the post.
