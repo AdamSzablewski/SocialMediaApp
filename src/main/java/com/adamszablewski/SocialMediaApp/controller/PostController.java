@@ -2,6 +2,7 @@ package com.adamszablewski.SocialMediaApp.controller;
 
 import com.adamszablewski.SocialMediaApp.annotations.SecureContentResource;
 import com.adamszablewski.SocialMediaApp.annotations.SecureUserIdResource;
+import com.adamszablewski.SocialMediaApp.dtos.PostDto;
 import com.adamszablewski.SocialMediaApp.dtos.TextPostDto;
 import com.adamszablewski.SocialMediaApp.exceptions.CustomExceptionHandler;
 import com.adamszablewski.SocialMediaApp.service.PostService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 @AllArgsConstructor
@@ -24,6 +26,14 @@ import java.io.IOException;
 public class PostController {
 
     private final PostService postService;
+
+    @GetMapping("/{userId}")
+    @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
+    @RateLimiter(name = "rateLimiter")
+    public ResponseEntity<List<PostDto>> getPostsByUser(HttpServletRequest servletRequest, @PathVariable long userId){
+
+        return ResponseEntity.ok().body(postService.getAllPostByUser(userId));
+    }
 
     @PostMapping()
     @SecureUserIdResource
@@ -54,14 +64,7 @@ public class PostController {
 
         return ResponseEntity.ok(postService.uploadVideoForPost(userId, video));
     }
-//    @PutMapping("/image")
-//    @SecureContentResource
-//    public ResponseEntity<String> publishImagePost(HttpServletRequest servletRequest,
-//                                                   @RequestParam(name = "multimediaId") String multimediaId,
-//                                                   @RequestBody PostDto postDto ) {
-//        postService.publishPost(multimediaId, postDto);
-//        return ResponseEntity.ok().build();
-//    }
+
     @PostMapping("/publish")
     @SecureContentResource("multimediaId")
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")
@@ -72,14 +75,7 @@ public class PostController {
         postService.publishPost(multimediaId, postDto);
         return ResponseEntity.ok().build();
     }
-//    @PutMapping("/video")
-//    @SecureContentResource(value = "multimediaId")
-//    public ResponseEntity<String> publishVideoPost(HttpServletRequest servletRequest,
-//                                                   @RequestParam(name = "multimediaId") String multimediaId,
-//                                                   @RequestBody PostDto postDto ) {
-//        postService.publishPost(multimediaId, postDto);
-//        return ResponseEntity.ok().build();
-//    }
+
     @DeleteMapping("/delete")
     @SecureContentResource(value = "postId")
     @CircuitBreaker(name = "circuitBreaker", fallbackMethod = "fallBackMethod")

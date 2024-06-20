@@ -1,5 +1,6 @@
 package com.adamszablewski.SocialMediaApp.service;
 
+import com.adamszablewski.SocialMediaApp.dtos.PostDto;
 import com.adamszablewski.SocialMediaApp.dtos.TextPostDto;
 import com.adamszablewski.SocialMediaApp.enteties.multimedia.Image;
 import com.adamszablewski.SocialMediaApp.enteties.multimedia.Video;
@@ -14,6 +15,7 @@ import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.PostRepository;
 import com.adamszablewski.SocialMediaApp.repository.posts.ProfileRepository;
 import com.adamszablewski.SocialMediaApp.s3.S3service;
+import com.adamszablewski.SocialMediaApp.utils.Mapper;
 import com.adamszablewski.SocialMediaApp.utils.UniqueIdGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
@@ -24,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -105,4 +108,10 @@ public class PostService {
             }
     }
 
+    public List<PostDto> getAllPostByUser(long userId) {
+        return postRepository.getAllByUserId(userId)
+                .stream()
+                .map(Mapper::mapPostToDto)
+                .toList();
+    }
 }

@@ -14,10 +14,10 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
     boolean existsByEmail(String email);
 
-    @Query(value = "Select * from person p where p.first_name=:firstName and p.last_name=:lastName", nativeQuery = true )
+    @Query(value = "Select * from person p where p.first_name LIKE :firstName% and p.last_name LIKE :lastName%", nativeQuery = true )
     List<Person> getUsersThatMatch(String firstName, String lastName);
-    @Query(value = "Select * from person p where p.first_name=:firstName", nativeQuery = true )
+    @Query(value = "Select * from person p where p.first_name LIKE :firstName%", nativeQuery = true )
     List<Person> getUsersByFirstName(String firstName);
-    @Query(value = "Select * from person p where p.last_name=:lastName", nativeQuery = true )
+    @Query(value = "Select * from person p where p.last_name LIKE :lastName%", nativeQuery = true )
     List<Person> getUsersByLastName(String lastName);
 }

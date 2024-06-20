@@ -10,9 +10,6 @@ en gruppkonversation där användare kan skicka både text, bild och video medde
 Vid bortglömt lösenord kan användare även generera ett engångslösenord som skickas till användaren via email.
 
 I det här projektet har jag använt sådana koncept som OOP, AOP, functional programming och asynchronous programming.
-#### Testa projektet här: (Snart tillgängligt)
-
-
 
 ## Använda teknologier
 - **Java:** Det primära programmeringsspråket.
@@ -22,7 +19,14 @@ I det här projektet har jag använt sådana koncept som OOP, AOP, functional pr
 - **JUnit och Mockito:** Använder JUnit och Mockito för grundlig enhetstestning för att säkerställa mikrotjänsternas pålitlighet.
 - **MySQL:** Hanterar data, inklusive inlägg, videodata och bildinformation samt användarinformation.
 
-## Nyckelfunktioner
+# Nyckelfunktioner
+
+## Sökfunktion
+Användare kan söka efter andra användare genom att skriva ett förnamn, efternamn eller båda
+
+![socialApp%20480](https://github.com/AdamSzablewski/SocialMediaApp/assets/114603622/96de5bc0-2646-42a4-9dd3-8dc0f08501d0)
+[Klicka här för att se videon](https://youtu.be/LnN93dLWGuQ)
+
 ### Inlägg: 
 - **Typ av inlägg:** Användare kan skapa och dela video, bild eller textbaserade inlägg med sitt nätverk.
 - **Data-servering** Bild och Video inlägg serveras direkt till användaren genom Amazon CloudFront och AWS S3, genom sparad 
