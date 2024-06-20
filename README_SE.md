@@ -25,15 +25,21 @@ I det här projektet har jag använt sådana koncept som OOP, AOP, functional pr
 Användare kan söka efter andra användare genom att skriva ett förnamn, efternamn eller båda
 
 ![socialApp%20480](https://github.com/AdamSzablewski/SocialMediaApp/assets/114603622/96de5bc0-2646-42a4-9dd3-8dc0f08501d0)
+
+
 [Klicka här för att se videon](https://youtu.be/LnN93dLWGuQ)
 
-### Inlägg: 
+## Inlägg:
 - **Typ av inlägg:** Användare kan skapa och dela video, bild eller textbaserade inlägg med sitt nätverk.
-- **Data-servering** Bild och Video inlägg serveras direkt till användaren genom Amazon CloudFront och AWS S3, genom sparad 
-    länk till filen.
-- **Övrig information:** Inlägg kan publiceras som offentliga för allmänheten eller privata som låter enbart användarens vänner att 
-se inlägget.
+- **Data-servering** Bild och Video inlägg serveras direkt till användaren genom Amazon CloudFront och AWS S3, genom sparad
+  länk till filen.
+- **Övrig information:** Inlägg kan publiceras som offentliga för allmänheten eller privata som låter enbart användarens vänner att
+  se inlägget.
 - Användare kan se antal vsiningar av inlägget, gillanden och kommentarer samt vem som har gillat-kommenterat inlägget.
+
+![imagepost%20480](https://github.com/AdamSzablewski/SocialMediaApp/assets/114603622/ac6d812f-4564-4ea3-97d6-ed621c54b40e)
+
+[Klicka här för att se videon](https://youtu.be/whWzh4XbZNg)
 
 ### Kommentering och svar:
 - **Kommentarer:** Användare kan kommentera inlägg samt svara på andra kommentarer.

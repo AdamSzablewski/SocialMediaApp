@@ -38,6 +38,11 @@ public class PostService {
     private final PersonRepository personRepository;
     private final UniqueIdGenerator uniqueIdGenerator;
     public void deletePostById(long postId) {
+        Post post = postRepository.findById(postId)
+                        .orElseThrow(NoSuchPostException::new);
+        Profile profile = post.getPerson().getProfile();
+        profile.getPosts().remove(post);
+
         postRepository.deleteById(postId);
     }
 

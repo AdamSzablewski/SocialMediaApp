@@ -22,12 +22,26 @@ In this project I used concepts such as asynchronous programming, aspect oriente
 - **MySQL:** 
 
 
-## Key Features
+# Key Features
+
+## Search Function
+Users can search for other users by entering a first name, last name, or both.
+
+![socialApp%20480](https://github.com/AdamSzablewski/SocialMediaApp/assets/114603622/96de5bc0-2646-42a4-9dd3-8dc0f08501d0)
+
+[Click here to see the video](https://youtu.be/LnN93dLWGuQ)
+
 ### Posts:
 - **Post Types:** Users can create and share video, image, or text-based posts.
 - **Data Serving:** Image and Video posts are served directly to the user through Amazon CloudFront and AWS S3, via a stored link to the file.
 - **Additional Information:** Posts can be published as public for everyone or private, allowing only the user's friends to see the post.
 - Users can view view count of posts and who liked or commented on the post.
+- 
+![imagepost%20480](https://github.com/AdamSzablewski/SocialMediaApp/assets/114603622/ac6d812f-4564-4ea3-97d6-ed621c54b40e)
+
+[Click here to see the video](https://youtu.be/whWzh4XbZNg)
+
+
 ### Messaging Functionality:
 - **Messages:** The application allows users to communicate with each other through text and image or video messages.
 - **Types of Conversations:** A conversation can be held between 2 or more users who have started a group conversation.

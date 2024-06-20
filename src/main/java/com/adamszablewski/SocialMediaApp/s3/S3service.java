@@ -17,10 +17,11 @@ public class S3service {
 
     public void putObject(String bucketName, String key, byte[] byteFile){
 //(DISABLED)
-//        PutObjectRequest objectRequest = PutObjectRequest.builder()
-//                .bucket(bucketName)
-//                .key(key)
-//                .build();
-//        s3Client.putObject(objectRequest, RequestBody.fromBytes(byteFile));
+        PutObjectRequest objectRequest = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .build();
+        s3Client.putObject(objectRequest, RequestBody.fromBytes(byteFile));
+
     }
 }
