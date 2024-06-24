@@ -2,6 +2,7 @@ package com.adamszablewski.SocialMediaApp.utils;
 
 
 import com.adamszablewski.SocialMediaApp.dtos.*;
+import com.adamszablewski.SocialMediaApp.dtos.message.MessageDTO;
 import com.adamszablewski.SocialMediaApp.enteties.Conversation;
 import com.adamszablewski.SocialMediaApp.enteties.Message;
 import com.adamszablewski.SocialMediaApp.enteties.Person;

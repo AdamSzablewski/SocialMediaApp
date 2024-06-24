@@ -1,6 +1,6 @@
 package com.adamszablewski.SocialMediaApp.service;
 
-import com.adamszablewski.SocialMediaApp.dtos.MessageDTO;
+import com.adamszablewski.SocialMediaApp.dtos.message.MessageCreateDto;
 import com.adamszablewski.SocialMediaApp.enteties.Conversation;
 import com.adamszablewski.SocialMediaApp.enteties.Message;
 import com.adamszablewski.SocialMediaApp.enteties.Person;
@@ -28,7 +28,7 @@ public class MessageService {
    private final PersonRepository personRepository;
    private final ImageService imageService;
    @Transactional
-   public Message addTextMessageToConversation(long userId, long conversationId, MessageDTO messageDTO) throws Exception {
+   public Message addTextMessageToConversation(long userId, long conversationId, MessageCreateDto messageCreateDto) throws Exception {
         Person person = personRepository.findById(userId)
                 .orElseThrow(NoSuchUserException::new);
         Conversation conversation = conversationService.getConversationByIdFromUser(person.getProfile(), conversationId);
@@ -36,7 +36,7 @@ public class MessageService {
                 .sender(person.getProfile())
                 .dateTime(LocalDateTime.now())
                 .build();
-        message.setEncryptedMessage(messageDTO.getMessage());
+        message.setEncryptedMessage(messageCreateDto.getMessage());
         conversation.getMessages().add(message);
         messageRepository.save(message);
         conversationRepository.save(conversation);

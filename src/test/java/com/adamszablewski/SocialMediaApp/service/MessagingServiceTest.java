@@ -1,23 +1,16 @@
 package com.adamszablewski.SocialMediaApp.service;
 
-import com.adamszablewski.SocialMediaApp.dtos.ConversationDTO;
-import com.adamszablewski.SocialMediaApp.dtos.MessageDTO;
-import com.adamszablewski.SocialMediaApp.dtos.ProfileDto;
+import com.adamszablewski.SocialMediaApp.dtos.message.MessageDTO;
 import com.adamszablewski.SocialMediaApp.enteties.Conversation;
 import com.adamszablewski.SocialMediaApp.enteties.Message;
 import com.adamszablewski.SocialMediaApp.enteties.Person;
 import com.adamszablewski.SocialMediaApp.enteties.friends.Profile;
 import com.adamszablewski.SocialMediaApp.enteties.multimedia.Image;
 import com.adamszablewski.SocialMediaApp.enteties.multimedia.Video;
-import com.adamszablewski.SocialMediaApp.exceptions.NoSuchConversationFoundException;
 import com.adamszablewski.SocialMediaApp.exceptions.NoSuchUserException;
 import com.adamszablewski.SocialMediaApp.repository.ConversationRepository;
-import com.adamszablewski.SocialMediaApp.repository.ImageRepositroy;
 import com.adamszablewski.SocialMediaApp.repository.MessageRepository;
 import com.adamszablewski.SocialMediaApp.repository.PersonRepository;
-import com.adamszablewski.SocialMediaApp.repository.posts.ProfileRepository;
-import com.adamszablewski.SocialMediaApp.utils.EncryptionUtil;
-import com.adamszablewski.SocialMediaApp.utils.Mapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

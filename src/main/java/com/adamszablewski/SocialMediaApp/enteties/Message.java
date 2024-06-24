@@ -27,6 +27,7 @@ public class Message implements Identifiable {
     @ManyToOne
     @JsonIgnoreProperties("messages")
     private Conversation conversation;
+    @Lob
     private String text;
     @ManyToOne
     private Profile sender;

@@ -41,6 +41,16 @@ Användare kan söka efter andra användare genom att skriva ett förnamn, efter
 
 [Klicka här för att se videon](https://youtu.be/whWzh4XbZNg)
 
+
+## Meddelandefunktionalitet:
+- **Meddelanden** Applikationen låter användare kommunicera med varandra genom text och bild eller video-meddelanden.
+- **Typ av konversationer** En konversation kan hållas mellan 2 eller flera användare som har startat en gruppkonversation.
+
+![messaging480](https://github.com/AdamSzablewski/SocialMediaApp/assets/114603622/4b5d1fa8-f42b-4c0f-ba79-e2fd55862478)
+
+- **Säkerhet** Alla meddelanden är krypterade med AES-256-kryptering.
+![Alt text](https://github.com/AdamSzablewski/SocialMediaApp/assets/114603622/0828d164-6e42-4954-975f-54555ba2286c)
+
 ### Kommentering och svar:
 - **Kommentarer:** Användare kan kommentera inlägg samt svara på andra kommentarer.
 - **Popularitet:** Kommentarer för ett inlägg eller de som är svar till en annan kommentar sorteras i den ordning som visar störst
@@ -52,10 +62,7 @@ Användare kan söka efter andra användare genom att skriva ett förnamn, efter
 
 ### Vänhantering:
 - **Vänner** Användare kan ansluta sig till andra genom att skicka och acceptera vänförfrågningar, vilket utvidgar deras sociala nätverk.
-### Meddelandefunktionalitet:
-- **Meddelanden** Applikationen låter användare kommunicera med varandra genom text och bild eller video-meddelanden.
-- **Typ av konversationer** En konversation kan hållas mellan 2 eller flera användare som har startat en gruppkonversation.
-- **Säkerhet** Alla meddelanden är krypterade med AES-256-kryptering. 
+
 ### Email:
 - **Bortglömt lösenord** I fall som bortglömt lösenord skickar appen ett engångslösenord till användarens email. 
 ### Användarregistrering och autentisering:

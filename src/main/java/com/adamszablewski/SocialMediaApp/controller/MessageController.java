@@ -3,8 +3,8 @@ package com.adamszablewski.SocialMediaApp.controller;
 
 import com.adamszablewski.SocialMediaApp.annotations.SecureContentResource;
 import com.adamszablewski.SocialMediaApp.annotations.SecureUserIdResource;
-import com.adamszablewski.SocialMediaApp.dtos.MessageDTO;
-import com.adamszablewski.SocialMediaApp.enteties.Message;
+import com.adamszablewski.SocialMediaApp.dtos.message.MessageCreateDto;
+import com.adamszablewski.SocialMediaApp.dtos.message.MessageDTO;
 import com.adamszablewski.SocialMediaApp.exceptions.CustomExceptionHandler;
 import com.adamszablewski.SocialMediaApp.service.MessageService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -15,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @Controller
 @AllArgsConstructor
@@ -31,7 +29,7 @@ public class MessageController {
     public ResponseEntity<MessageDTO> sendTextMessageToConversation(
                                                             @RequestParam("conversationId") long conversationId,
                                                             @RequestParam("userId") long userId,
-                                                            @RequestBody MessageDTO message,
+                                                            @RequestBody MessageCreateDto message,
                                                             HttpServletRequest httpServletRequest) throws Exception {
         messageService.addTextMessageToConversation(userId, conversationId, message);
         return ResponseEntity.ok().build();

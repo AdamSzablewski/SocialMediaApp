@@ -1,5 +1,6 @@
-package com.adamszablewski.SocialMediaApp.dtos;
+package com.adamszablewski.SocialMediaApp.dtos.message;
 
+import com.adamszablewski.SocialMediaApp.dtos.ProfileDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
