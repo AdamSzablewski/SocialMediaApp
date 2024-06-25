@@ -42,10 +42,15 @@ Users can search for other users by entering a first name, last name, or both.
 [Click here to see the video](https://youtu.be/whWzh4XbZNg)
 
 
-### Messaging Functionality:
+## Messaging Functionality:
 - **Messages:** The application allows users to communicate with each other through text and image or video messages.
 - **Types of Conversations:** A conversation can be held between 2 or more users who have started a group conversation.
+![messaging480](https://github.com/AdamSzablewski/SocialMediaApp/assets/114603622/4b5d1fa8-f42b-4c0f-ba79-e2fd55862478)
+
 - **Security:** All messages are encrypted with AES-256 encryption.
+  ![Alt text](https://github.com/AdamSzablewski/SocialMediaApp/assets/114603622/0828d164-6e42-4954-975f-54555ba2286c)
+
+  
 
 ### Commenting and Replies:
 - **Comments:** Users can comment on posts and reply to other comments.
